@@ -54,12 +54,14 @@ serialInclude([
 	"./src/Move.js",
     "./src/Position.js",
 	"./src/Board.js",
+	"./src/Node.js",
 
 	(main = function () {
 		
-        console.log("It's working!");
+        console.log("Starting game...");
 
-		
+		let board = new Board();
+		console.log(board.getValidMoves());
 
 
 	}),
