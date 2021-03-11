@@ -53,6 +53,7 @@ function getUrlVars() {
 serialInclude([
 	"./src/Move.js",
     "./src/Position.js",
+	"./src/Board.js",
 
 	(main = function () {
 		

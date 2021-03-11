@@ -1,0 +1,17 @@
+
+.table {
+    margin: auto;
+    margin-top: 3em;
+    width: 50%;
+    border: 3px solid black;
+}
+
+td {
+    padding: 0;
+    border: 3px solid black;
+    height: 5em;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    align-items: center;
+}
