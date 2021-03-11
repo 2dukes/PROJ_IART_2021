@@ -51,18 +51,20 @@ function getUrlVars() {
 }
 //Include additional files here
 serialInclude([
-	"./src/Move.js",
-    "./src/Position.js",
-	"./src/Board.js",
-	"./src/Node.js",
+	"./Move.js",
+    "./Position.js",
+	"./Board.js",
+	"./Node.js",
 
 	(main = function () {
 		
         console.log("Starting game...");
-
+		
 		let board = new Board();
+		var t0 = performance.now();
 		console.log(board.getValidMoves());
-
+		var t1 = performance.now();
+		console.log("Call to function took " + (t1 - t0) + " milliseconds.");
 
 	}),
 ]);
