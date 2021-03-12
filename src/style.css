@@ -13,9 +13,22 @@ body {
 
 td {
     padding: 0!important;
-    background-color: #171717;
+    background-color: #171717 !important;
     border: 2px solid whitesmoke;
     text-align: center;
     vertical-align: middle;
     font-size: 3.5em;
+}
+
+td.selectable:hover {
+    background-color: #22222200 !important;
+    cursor: pointer;
+}
+
+table tbody td.hint {
+    background-color: #544127 !important;
+}
+
+table.table tbody td.selected {
+    background-color:#666666 !important;
 }

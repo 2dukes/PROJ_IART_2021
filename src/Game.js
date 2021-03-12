@@ -8,25 +8,22 @@ class Game {
 
         this.firstX = -1;
         this.firstY = -1;
+        
+        this.hints = false;
     }
 
     run() {
-        var t0 = performance.now();
-        console.log(this.board.getValidMoves());
-        var t1 = performance.now();
-        console.log("Call to function took " + (t1 - t0) + " milliseconds.");
+        this.board.getValidMoves();
     }
 
     handleCellClick(event) {
-/*       t  if (event.target.style.backgroundColor == "#666666")
-            event.target.style.backgroundColor = "#171717";
-        else
-            event.target.syle.backgroundColor = "#666666"; */
-
         if(event.target.innerHTML != 0) {
             if(this.state == 0) {
                 this.state = 1;
-                event.target.style.backgroundColor = "#666666";
+
+                // event.target.style.backgroundColor = "#666666";
+                event.target.classList.add("selected");
+
                 let xAndY = event.target.id.split('c');
                 this.firstY = parseInt(xAndY[0]);
                 this.firstX = parseInt(xAndY[1]);
@@ -39,7 +36,9 @@ class Game {
 
                 if(x == this.firstX && y == this.firstY) {
                     this.state = 0;
-                    event.target.style.backgroundColor = "#171717";
+                    
+                    this.board.removeSelected();
+
                     return;
                 }
 
@@ -47,9 +46,19 @@ class Game {
                     this.state = 0;
                     this.board.emptyCell(x,y);
                     this.board.emptyCell(this.firstX, this.firstY);
+                    if(this.hints) {
+                        this.board.removeHints();
+                    }
+                    this.board.removeSelected();
                 }
             }
         }
 	}
 
+    showHints() {
+        this.hints = true;
+    }
+	
+
 }	
+
