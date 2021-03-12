@@ -7,16 +7,6 @@ class Node {
         this.currentDepth = currentDepth;
         this.board = [...board];
     }
-    
-    // getChildren() {
-    //     let xLen = this.state[0].length;
-    //     let yLen = this.state.length;
-    //     let x = 0, y = 0;
-    //     for (x = 0; x < xLen; x++) {
-    //         let rightElem = this.state.getRightElement(x, y);
-    //         let bottomElem = this.state.getBottomElement(x, y);   
-    //     }
-    // }
 }
 
 // [[1,2,3,4,5,6,7,8,9],

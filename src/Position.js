@@ -1,4 +1,3 @@
-
 class Position {
     constructor(x, y) {
         this.x = x;

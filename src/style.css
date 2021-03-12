@@ -1,17 +1,21 @@
 
+body {
+    background-color: #262626;
+    color: white;
+}
+
 .table {
     margin: auto;
     margin-top: 3em;
     width: 50%;
-    border: 3px solid black;
+    border: 2px solid white;
 }
 
 td {
-    padding: 0;
-    border: 3px solid black;
-    height: 5em;
-    justify-content: center;
-    align-content: center;
+    padding: 0!important;
+    background-color: #171717;
+    border: 2px solid whitesmoke;
     text-align: center;
-    align-items: center;
+    vertical-align: middle;
+    font-size: 3.5em;
 }
