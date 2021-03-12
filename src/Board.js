@@ -26,69 +26,9 @@ class Board {
 	// [1,1,1,2,1,3,1,4,1],
 	// [5,1,6,1,7,1,8,1,9]
 
-	getValidMoves() {
-		let moves = [];
-		for (let y = 0; y < this.board.length; ++y) {
-			for (let x = 0; x < 9; ++x) {
-				if (this.board[y][x] != 0)
-					moves.push(...this.getValidMovesCell(x, y));
-			}
-		}
-		return moves;
-	}
+	
 
-	getValidMovesCell(x, y) {
-		let moves = [];
-		let initX = x;
-		let initY = y;
-		let n = this.board[y][x];
-
-		if (++y < this.board.length) {
-			do {
-				// Columns
-				if (this.board[y][x] == n || this.board[y][x] + n == 10) {
-					moves.push(
-						new Move(new Position(initX, initY), new Position(x, y))
-					);
-					break;
-				} else if (this.board[y][x] == 0) continue;
-				else break;
-			} while (++y < this.board.length);
-		}
-
-		y = initY;
-
-		let checkLines = true;
-
-		if (x == 8) {
-			x = 0;
-			if (y + 1 < this.board.length)
-				y++;
-			else checkLines = false;
-
-		} else x++;
-
-		if(checkLines) {
-			do {
-				// Lines
-				if (this.board[y][x] == n || this.board[y][x] + n == 10) {
-					moves.push(
-						new Move(new Position(initX, initY), new Position(x, y))
-					);
-					break;
-				} else if (this.board[y][x] == 0) {
-					// Line Break with zeros
-					if (x == 8) {
-						x = -1;
-						y++;
-					}
-					continue;
-				} else break;
-			} while (++x < this.board[0].length && y < this.board.length);
-		}
-
-		return moves;
-	}
+	
 
 	drawBoard() {
 		let colors = [
@@ -133,17 +73,17 @@ class Board {
 	handleCellOrder(firstX, firstY, secondX, secondY) {
 		let validPairs;
 		if (secondY > firstY) {
-			validPairs = this.getValidMovesCell(firstX, firstY);
+			validPairs = getValidMovesCell(this.board, firstX, firstY);
 			return this.checkValidPair(validPairs, secondX, secondY);
 		} else if (secondY < firstY) {
-			validPairs = this.getValidMovesCell(secondX, secondY);
+			validPairs = getValidMovesCell(this.board, secondX, secondY);
 			return this.checkValidPair(validPairs, firstX, firstY);
 		} else {
 			if (secondX > firstX) {
-				validPairs = this.getValidMovesCell(firstX, firstY);
+				validPairs = getValidMovesCell(this.board, firstX, firstY);
 				return this.checkValidPair(validPairs, secondX, secondY);
 			} else {
-				validPairs = this.getValidMovesCell(secondX, secondY);
+				validPairs = getValidMovesCell(this.board, secondX, secondY);
 				return this.checkValidPair(validPairs, firstX, firstY);
 			}
 		}
@@ -201,8 +141,7 @@ class Board {
 			}
             toAdd.push(row);
 		}
-        
-        console.log(toAdd);
+    
 
         this.board.push(...toAdd);
         this.insertDeal(toAdd, currentHeight);
@@ -252,8 +191,7 @@ class Board {
     }
 
     giveHints() {
-        let validMoves = this.getValidMoves();
-        console.log(validMoves);
+        let validMoves = getValidMoves(this.board);
         this.game.showHints();
 
         for (let i = 0; i < validMoves.length; ++i) {
@@ -282,5 +220,8 @@ class Board {
 			cells[i].classList.remove("selected");
 		}
 	}
+
+
+	
 }
 

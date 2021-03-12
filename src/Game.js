@@ -13,7 +13,7 @@ class Game {
     }
 
     run() {
-        this.board.getValidMoves();
+        // getValidMoves(this.board.board);
     }
 
     handleCellClick(event) {

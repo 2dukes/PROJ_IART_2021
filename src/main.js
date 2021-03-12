@@ -56,12 +56,16 @@ serialInclude([
 	"./Board.js",
 	"./Node.js",
 	"./Game.js",
+	"./SearchTree.js",
 
 	(main = function () {
 		
 		let game = new Game();
 
 		game.run();
+		
+		// CABUM!
+		let searchTree = new SearchTree(game.board.board);
 
 	}),
 ]);
