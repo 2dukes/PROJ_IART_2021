@@ -7,9 +7,23 @@ class Node {
         this.board = [...board];
 
         this.state = checkFinalState(this.board);
+
+        this.visited = false;
+
     }
 
-    expand() {
+    expand(useDeal) {
+
+        if (this.state) {
+            console.log("Solved");
+            return [];
+        }
+
+        if (this.currentDepth > 3) {
+            console.log("Max Depth exceeded!");
+            return []; 
+        }
+
         let children = [];
         let validMoves = getValidMoves(this.board);
 
@@ -20,12 +34,16 @@ class Node {
             for (let j = 0; j < this.board.length; ++j)
                 newBoard[j] = this.board[j].slice();
             
-
             let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]));
             children.push(newNode);
         }
         
-        console.log(children);
+        if (useDeal) {
+            console.log("Expanding...");
+            children.push(new Node(null, this, this.currentDepth + 1, deal(this.board)));
+        }
+            
+        
         return children;
     }
 }
@@ -120,3 +138,60 @@ function applyMove(board, move) {
 
     return board;
 }
+
+function checkEqualBoards(board1, board2) {
+
+    if (board1 === board2) return true;
+    if (board1 == null || board2 == null) return false;
+    if (board1.length !== board2.length) return false;
+
+    for (let i = 0; i < board1.length; ++i)
+        if (board1[i] !== board2[i]) return false;
+    
+    return true;
+}
+
+function checkEqualNodes(node1, node2) {
+
+    if (node1.move.equals(node2.move) && checkEqualBoards(node1.board, node2.board))
+        return true;
+
+    return false;
+}
+
+
+function deal(board0) {
+
+    let board = [];
+
+    // Clone board
+    for (let j = 0; j < board0.length; ++j)
+        board[j] = board0[j].slice();
+
+
+    let currentHeight = board.length;
+    let toAdd = [], row = [];
+
+    for(let y = 0; y < currentHeight; ++y) {
+        for(let x = 0; x < board[0].length; ++x) {
+            if(board[y][x] != 0) {
+                row.push(board[y][x]);
+                if(row.length == board[0].length) {
+                    toAdd.push(row);
+                    row = [];
+                }
+            }
+        }
+    }
+    if(row.length > 0 && row.length < 9) {
+        while(row.length != 9) {
+            row.push(0);
+        }
+        toAdd.push(row);
+    }
+
+    board.push(...toAdd);
+
+    return board;
+}
+

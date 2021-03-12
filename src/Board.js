@@ -13,9 +13,13 @@ class Board {
 			// [0, 1, 1, 2, 1, 3, 1, 4, 1],
 			// [0, 1, 6, 1, 7, 1, 8, 1, 9]
 
-			[1,2,3,4,5,6,7,8,9],
+			[0,1,0,0,0,0,0,0,9],
+			[0,0,0,0,0,0,0,0,0],
+			[0,9,0,0,0,0,0,0,1],
+
+			/* [1,2,3,4,5,6,7,8,9],
 			[1,1,1,2,1,3,1,4,1],
-			[5,1,6,1,7,1,8,1,9]
+			[5,1,6,1,7,1,8,1,9] */
 		];
 		this.drawBoard();
 		document.querySelector("body button#deal").addEventListener("click", this.deal.bind(this));
@@ -114,16 +118,6 @@ class Board {
 		let y = 0;
 		let x = 0;
 
-        // while(y < currentHeight) {
-        //     if(this.board[y][x++] != 0)  {
-        //         row.push(this.board[y][x]);
-		// 	}
-        //     if(row.length == 9) {
-        //         y++;
-        //         toAdd.push(row);
-        //         row = [];
-        //     }
-        // }
 		for(let y = 0; y < currentHeight; ++y) {
 			for(let x = 0; x < this.board[0].length; ++x) {
 				if(this.board[y][x] != 0) {
