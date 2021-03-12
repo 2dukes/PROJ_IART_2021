@@ -55,16 +55,13 @@ serialInclude([
     "./Position.js",
 	"./Board.js",
 	"./Node.js",
+	"./Game.js",
 
 	(main = function () {
 		
-        console.log("Starting game...");
-		
-		let board = new Board();
-		var t0 = performance.now();
-		console.log(board.getValidMoves());
-		var t1 = performance.now();
-		console.log("Call to function took " + (t1 - t0) + " milliseconds.");
+		let game = new Game();
+
+		game.run();
 
 	}),
 ]);
