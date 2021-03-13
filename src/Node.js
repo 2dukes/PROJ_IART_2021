@@ -1,5 +1,7 @@
-const MAX_DEALS = 1;
-const MAX_DEPTH = 200;
+const MAX_DEALS = 4;
+const MAX_DEPTH = 1500;
+
+//let totalDeals = 0;
 
 class Node {
     constructor(move, parent, currentDepth, board, usedDeals) {
@@ -18,7 +20,7 @@ class Node {
 
         if (this.currentDepth > MAX_DEPTH) {
             console.log("Max Depth exceeded!");
-            return []; 
+            return [];
         }
 
         let children = [];
@@ -28,7 +30,8 @@ class Node {
         if (this.usedDeals < MAX_DEALS) {
             console.log("Using deal...");
             let boardDealNode = deal(this.board);
-            children.push(new Node(null, this, this.currentDepth + 1, boardDealNode,this.usedDeals+1));
+            //totalDeals++;
+            children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals+1));
         }
 
         for(let i = 0; i < validMoves.length; ++i) {

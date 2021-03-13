@@ -12,7 +12,7 @@ class SearchTree {
         this.queue = [];
 
         //this.result = this.dfs(new Node(null, null, 0, initialBoard, 0));
-        this.result = this.bfs(new Node(null, null, 0, initialBoard, 0));
+        this.result = this.dfs(new Node(null, null, 0, initialBoard, 0));
 
         if (this.result == null)
             console.log("Could not find a solution!");
@@ -105,24 +105,6 @@ class SearchTree {
     }
 
 
-function bfs( start ) {
-    var listToExplore = [ start ];
-
-    nodes[ start ].visited = true;
-
-    while ( listToExplore.length > 0 ) {
-        var nodeIndex = listToExplore.shift();
-        nodes[ nodeIndex ].links.forEach( function( childIndex ) {
-            if ( !nodes[ childIndex ].visited ) {
-                nodes[ childIndex ].visited = true;
-                listToExplore.push( childIndex );
-            }
-        } );
-    }
-};
-
-
-
     bfs(root) {
         let visitedBoards = [];
         let queue = [root];
@@ -131,7 +113,7 @@ function bfs( start ) {
         
         while(queue.length != 0) {
             let newNode = queue.shift();
-            console.log(newNode.currentDepth);
+            // console.log(newNode.currentDepth);
             if(this.checkAlreadyVisited(visitedBoards, newNode.board)) {
                 console.log("Already visited");
                 continue;
