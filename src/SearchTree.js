@@ -1,45 +1,47 @@
 class SearchTree {
     constructor(initialBoard) {
-        this.queue = [new Node(null, null, 0, initialBoard)];
-        this.visitedNodes = [...this.queue];
+        /* this.queue = [new Node(null, null, 0, initialBoard)];
+        this.visitedNodes = [...this.queue]; */
         
         //root.expand()[0].expand()[0].expand()[0].expand()[0].expand()[0].expand()[0];
 
-        this.numDeals = 0;
         
         //this.bfs();
 
-        this.result = this.dfs(new Node(null, null, 0, initialBoard));
+        this.result = this.dfs(new Node(null, null, 0, initialBoard),[]);
 
         if (this.result == null)
             console.log("Could not find a solution!");
 
     }
 
-    dfs(curr) {
-        if (curr.state) {
+    dfs(node, arr) {
+
+        arr.push([node.move, node.board]);
+
+        /* console.log(node.move); */
+
+        if (node.state) {
             console.log("Found a solution");
-            return curr;
+            console.log(arr);
+            return node;
         }
 
-        let children;
-        if (this.numDeals++ < 1) {
-            children = curr.expand(true);
-        } 
-        else {
-            children = curr.expand(false);
-        }
+        let children = node.expand();
+        
 
         for (let i = 0; i < children.length; ++i) {
-            let result = this.dfs(children[i]);
+            let result = this.dfs(children[i],arr);
             if (result != null) return result;
         }
+
+        arr.pop();
 
         return null;
 
     }
 
-    bfs() {
+    /* bfs() {
         while(this.queue.length) {
             let curr = this.queue.shift();
             curr.visited = true;
@@ -71,7 +73,7 @@ class SearchTree {
         }
 
         console.log("Could not find a solution");
-    }
+    } */
 
 
 

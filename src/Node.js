@@ -1,3 +1,6 @@
+
+let numDeals = 0;
+
 class Node {
     constructor(move, parent, currentDepth, board) {
         // this.id = id;
@@ -12,20 +15,28 @@ class Node {
 
     }
 
-    expand(useDeal) {
+    expand() {
 
         if (this.state) {
             console.log("Solved");
             return [];
         }
 
-        if (this.currentDepth > 3) {
+        if (this.currentDepth > 20) {
             console.log("Max Depth exceeded!");
             return []; 
         }
 
         let children = [];
         let validMoves = getValidMoves(this.board);
+
+        if (validMoves.length == 0) { // use deal when there are no more solutions
+            if (numDeals++ < 20) {
+                console.log("Expanding...");
+                let newBoard = deal(this.board);
+                children.push(new Node(null, this, this.currentDepth + 1, newBoard));
+            }
+        }
 
         for(let i = 0; i < validMoves.length; ++i) {
             let newBoard = [];
@@ -36,12 +47,16 @@ class Node {
             
             let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]));
             children.push(newNode);
+
+            if (numDeals++ < 20) {
+                console.log("Expanding...");
+                let newBoard = deal(this.board);
+                children.push(new Node(null, this, this.currentDepth + 1, newBoard));
+            }
+
         }
         
-        if (useDeal) {
-            console.log("Expanding...");
-            children.push(new Node(null, this, this.currentDepth + 1, deal(this.board)));
-        }
+        
             
         
         return children;
