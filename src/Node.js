@@ -1,5 +1,6 @@
 
 const MAX_DEALS = 0;
+const MAX_DEPTH = 100;
 
 class Node {
     constructor(move, parent, currentDepth, board, usedDeals) {
@@ -19,12 +20,7 @@ class Node {
 
     expand() {
 
-        if (this.state) {
-            console.log("Solved");
-            return [];
-        }
-
-        if (this.currentDepth > 100) {
+        if (this.currentDepth > MAX_DEPTH) {
             console.log("Max Depth exceeded!");
             return []; 
         }
@@ -32,15 +28,15 @@ class Node {
         let children = [];
         let validMoves = getValidMoves(this.board);
 
-        /* if (validMoves.length == 0) { // use deal when there are no more solutions
+        if (validMoves.length == 0) { // use deal when there are no more solutions
             if (this.usedDeals < MAX_DEALS) {
                 console.log("No more solutions now... Using deal...");
                 let newBoard = deal(this.board);
                 children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
             }
-        } */
+        }
 
-        // use deal in the root node
+        // use deal in the root node (we need to remove this)
         if (this.parent == null) {
             let newBoard = deal(this.board);
             children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
@@ -63,11 +59,7 @@ class Node {
                 let newBoard = deal(this.board);
                 children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
             }
-
         }
-        
-        
-            
         
         return children;
     }

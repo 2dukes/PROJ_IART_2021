@@ -5,7 +5,6 @@ class SearchTree {
         
         //root.expand()[0].expand()[0].expand()[0].expand()[0].expand()[0].expand()[0];
 
-        
         //this.bfs();
 
         this.result = this.dfs(new Node(null, null, 0, initialBoard,0),[]);
@@ -15,30 +14,45 @@ class SearchTree {
 
     }
 
-    dfs(node, arr) {
+    dfs(node, path) {
 
-        arr.push([node.move, node.board]);
-
-        /* console.log(node.move); */
+        path.push([node.move, node.board]);
 
         if (node.state) {
-            console.log("Found a solution");
-            console.log(arr);
+            console.log("Found a solution:");
+            console.log(path);
+            console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
             return node;
         }
 
         let children = node.expand();
-        
 
         for (let i = 0; i < children.length; ++i) { // we need to check if the node was already visited
-            let result = this.dfs(children[i],arr);
+            let result = this.dfs(children[i],path);
             if (result != null) return result;
         }
 
-        arr.pop();
+        path.pop();
 
         return null;
+    }
 
+    countNumMoves(path) {
+        let result = 0;
+        for (let i = 0; i < path.length; ++i) {
+            if (path[i][0] != null)
+                result++;
+        }
+        return result;
+    }
+
+    countNumDeals(path) {
+        let result = 0;
+        for (let i = 0; i < path.length; ++i) {
+            if (path[i][0] == null)
+                result++;
+        }
+        return result - 1; // -1 because of the root node
     }
 
     /* bfs() {
