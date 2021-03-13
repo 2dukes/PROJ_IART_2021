@@ -1,6 +1,5 @@
-
-const MAX_DEALS = 0;
-const MAX_DEPTH = 100;
+const MAX_DEALS = 1;
+const MAX_DEPTH = 200;
 
 class Node {
     constructor(move, parent, currentDepth, board, usedDeals) {
@@ -10,12 +9,9 @@ class Node {
         this.currentDepth = currentDepth;
         this.board = [...board];
 
-        this.state = checkFinalState(this.board);
-
-        this.visited = false;
+        this.reachedFinalState = checkFinalState(this.board);
 
         this.usedDeals = usedDeals;
-
     }
 
     expand() {
@@ -28,23 +24,14 @@ class Node {
         let children = [];
         let validMoves = getValidMoves(this.board);
 
-        if (validMoves.length == 0) { // use deal when there are no more solutions
-            if (this.usedDeals < MAX_DEALS) {
-                console.log("No more solutions now... Using deal...");
-                let newBoard = deal(this.board);
-                children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
-            }
-        }
-
-        // use deal in the root node (we need to remove this)
-        if (this.parent == null) {
-            let newBoard = deal(this.board);
-            children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
-        }
         
+        if (this.usedDeals < MAX_DEALS) {
+            console.log("Using deal...");
+            let boardDealNode = deal(this.board);
+            children.push(new Node(null, this, this.currentDepth + 1, boardDealNode,this.usedDeals+1));
+        }
 
         for(let i = 0; i < validMoves.length; ++i) {
-
             let newBoard = [];
 
             // Clone board
@@ -53,13 +40,8 @@ class Node {
             
             let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]),this.usedDeals);
             children.push(newNode);
-
-            if (this.usedDeals < MAX_DEALS) {
-                console.log("Using deal...");
-                let newBoard = deal(this.board);
-                children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
-            }
         }
+       
         
         return children;
     }
@@ -157,27 +139,24 @@ function applyMove(board, move) {
 }
 
 function checkEqualBoards(board1, board2) {
-
     if (board1 === board2) return true;
     if (board1 == null || board2 == null) return false;
-    if (board1.length !== board2.length) return false;
-
-    for (let i = 0; i < board1.length; ++i)
-        if (board1[i] !== board2[i]) return false;
+    if (board1.length != board2.length) return false;
     
+    for (let i = 0; i < board1.length; ++i) 
+        for (let j = 0; j < board1[0].length; ++j) 
+           if (board1[i][j] !== board2[i][j]) return false;
+        
     return true;
 }
 
 function checkEqualNodes(node1, node2) {
 
-    if (node1.move.equals(node2.move) && checkEqualBoards(node1.board, node2.board))
-        return true;
-
-    return false;
+    return checkEqualBoards(node1.board, node2.board);
 }
 
 
-function deal(board0) {
+function deal(board0) { // duplicada
 
     let board = [];
 

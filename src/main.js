@@ -66,6 +66,5 @@ serialInclude([
 		
 		// CABUM!
 		let searchTree = new SearchTree(game.board.board);
-
 	}),
 ]);
