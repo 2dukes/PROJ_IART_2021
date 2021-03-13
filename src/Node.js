@@ -1,8 +1,8 @@
 
-let numDeals = 0;
+const MAX_DEALS = 0;
 
 class Node {
-    constructor(move, parent, currentDepth, board) {
+    constructor(move, parent, currentDepth, board, usedDeals) {
         // this.id = id;
         this.move = move;
         this.parent = parent;
@@ -13,6 +13,8 @@ class Node {
 
         this.visited = false;
 
+        this.usedDeals = usedDeals;
+
     }
 
     expand() {
@@ -22,7 +24,7 @@ class Node {
             return [];
         }
 
-        if (this.currentDepth > 20) {
+        if (this.currentDepth > 100) {
             console.log("Max Depth exceeded!");
             return []; 
         }
@@ -30,28 +32,36 @@ class Node {
         let children = [];
         let validMoves = getValidMoves(this.board);
 
-        if (validMoves.length == 0) { // use deal when there are no more solutions
-            if (numDeals++ < 20) {
-                console.log("Expanding...");
+        /* if (validMoves.length == 0) { // use deal when there are no more solutions
+            if (this.usedDeals < MAX_DEALS) {
+                console.log("No more solutions now... Using deal...");
                 let newBoard = deal(this.board);
-                children.push(new Node(null, this, this.currentDepth + 1, newBoard));
+                children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
             }
+        } */
+
+        // use deal in the root node
+        if (this.parent == null) {
+            let newBoard = deal(this.board);
+            children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
         }
+        
 
         for(let i = 0; i < validMoves.length; ++i) {
+
             let newBoard = [];
 
             // Clone board
             for (let j = 0; j < this.board.length; ++j)
                 newBoard[j] = this.board[j].slice();
             
-            let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]));
+            let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]),this.usedDeals);
             children.push(newNode);
 
-            if (numDeals++ < 20) {
-                console.log("Expanding...");
+            if (this.usedDeals < MAX_DEALS) {
+                console.log("Using deal...");
                 let newBoard = deal(this.board);
-                children.push(new Node(null, this, this.currentDepth + 1, newBoard));
+                children.push(new Node(null, this, this.currentDepth + 1, newBoard,this.usedDeals+1));
             }
 
         }

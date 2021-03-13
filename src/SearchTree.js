@@ -8,7 +8,7 @@ class SearchTree {
         
         //this.bfs();
 
-        this.result = this.dfs(new Node(null, null, 0, initialBoard),[]);
+        this.result = this.dfs(new Node(null, null, 0, initialBoard,0),[]);
 
         if (this.result == null)
             console.log("Could not find a solution!");
@@ -30,7 +30,7 @@ class SearchTree {
         let children = node.expand();
         
 
-        for (let i = 0; i < children.length; ++i) {
+        for (let i = 0; i < children.length; ++i) { // we need to check if the node was already visited
             let result = this.dfs(children[i],arr);
             if (result != null) return result;
         }
@@ -77,13 +77,13 @@ class SearchTree {
 
 
 
-    checkIfNodeWasVisited(node) {
+    /* checkIfNodeWasVisited(node) {
         for (let i = 0; i < this.queue; ++i) {
             if (checkEqualNodes(node, this.visitedNodes[i]))
                 return true;
         }
         return false;
-    }
+    } */
 
     
 
