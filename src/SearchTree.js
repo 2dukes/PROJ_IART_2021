@@ -11,42 +11,15 @@ class SearchTree {
 
         this.queue = [];
 
-        //this.result = this.dfs(new Node(null, null, 0, initialBoard, 0));
-        this.result = this.dfs(new Node(null, null, 0, initialBoard, 0));
+        // this.result = this.dfs(new Node(null, null, 0, initialBoard, 0), null);
+        // this.result = this.bfs(new Node(null, null, 0, initialBoard, 0));
+        this.result = this.iterativeDeepening(new Node(null, null, 0, initialBoard, 0));
 
-        if (this.result == null)
+        if (this.result == -1)
             console.log("Could not find a solution!");
-
+        else
+            console.log('Yeah boy!' + this.result);
     }
-
-    // dfs(node, path, visitedNodes) {
-    //     if(this.checkAlreadyVisited(visitedNodes, node.board)) {
-    //         console.log("Already visited");
-    //         return null;
-    //     }
-
-    //     visitedNodes.push(node.board);
-    //     path.push([node.move, node.board]);
-
-    //     if (node.reachedFinalState) {
-    //         console.log("Found a solution:");
-    //         console.log(path);
-    //         console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
-    //         return node;
-    //     }
-
-    //     let children = node.expand();
-
-    //     for (let i = 0; i < children.length; ++i) { // we need to check if the node was already visited
-    //         let result = this.dfs(children[i], path, visitedNodes);
-    //         if (result != null) return result;
-    //         // console.log('.');
-    //     }
-
-    //     path.pop();
-
-    //     return null;
-    // }
     
     buildSolution(node) {
         let solution = [node];
@@ -57,7 +30,19 @@ class SearchTree {
         return solution;
     }
 
-    dfs(root) {
+    iterativeDeepening(root) {
+        let depth = 0, result = -1;
+
+        while(result == -1 && depth < 11) {
+            result = this.dfs(root, depth);
+            console.log("Depth: " + depth);
+            depth++;
+        }
+
+        return result;
+    }
+
+    dfs(root, limit) {
         let visitedBoards = [];
         let queue = [root];
         // let board = root.board;
@@ -65,7 +50,7 @@ class SearchTree {
         
         while(queue.length != 0) {
             let newNode = queue.shift();
-            if(this.checkAlreadyVisited(visitedBoards, newNode.board)) {
+            if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
                 continue;
             }
@@ -77,13 +62,16 @@ class SearchTree {
                 return newNode;
             }
             
-            visitedBoards.push(newNode.board);
-            
-            let children = newNode.expand();
-            queue.unshift(...children);
+            if(newNode.currentDepth < limit || limit == null) {
+                // console.log(newNode.currentDepth);
+                visitedBoards.push(newNode.board.toString());
+                
+                let children = newNode.expand();
+                queue.unshift(...children);
+            }
         }
 
-        console.log('Could not find a solution');
+        return -1;
     }
 
     countNumMoves(path) {
@@ -114,7 +102,7 @@ class SearchTree {
         while(queue.length != 0) {
             let newNode = queue.shift();
             // console.log(newNode.currentDepth);
-            if(this.checkAlreadyVisited(visitedBoards, newNode.board)) {
+            if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
                 continue;
             }
@@ -135,55 +123,13 @@ class SearchTree {
         console.log('Could not find a solution');
     }
 
-    // bfs() {
-    //     while(this.queue.length) {
-    //         let curr = this.queue.shift();
-    //         curr.visited = true;
-    //         this.visitedNodes.push(curr);
-
-    //         console.log(curr.move);
-
-    //         if (curr.state) {
-    //             console.log("Found a solution");
-    //             return;
-    //         }
-
-    //         let toVisit;
-    //         if (this.numDeals++ < 2) {
-    //             toVisit = curr.expand(true);
-    //         } 
-    //         else {
-    //             toVisit = curr.expand(false);
-    //         }
-            
-    //         for (let i = 0; i < toVisit.length; ++i) {
-    //             if (!this.checkIfNodeWasVisited(toVisit[i])) {
-    //                 this.queue.push(toVisit[i]);
-    //             }
-    //         }
-
-    //         this.queue.shift();
-            
-    //     }
-
-    //     console.log("Could not find a solution");
-    // }  
-
-
-
-    /* checkIfNodeWasVisited(node) {
-        for (let i = 0; i < this.queue; ++i) {
-            if (checkEqualNodes(node, this.visitedNodes[i]))
-                return true;
-        }
-        return false;
-    } */
-
     checkAlreadyVisited(visitedBoards, board) {
-        for (let i = 0; i < this.visitedBoards; ++i)
-            if (checkEqualBoards(board, visitedBoards[i]))
+        for (let i = 0; i < visitedBoards; ++i) {
+            if(visitedBoards[i] === board)
                 return true;
-
+            // if (checkEqualBoards(board, visitedBoards[i]))
+            //     return true;
+        }
         return false;
     }
 
