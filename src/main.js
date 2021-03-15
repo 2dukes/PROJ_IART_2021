@@ -57,6 +57,7 @@ serialInclude([
 	"./Node.js",
 	"./Game.js",
 	"./SearchTree.js",
+	"./PriorityQueue.js",
 
 	(main = function () {
 		

@@ -1,10 +1,10 @@
 const MAX_DEALS = 1;
-const MAX_DEPTH = 30;
+const MAX_DEPTH = 1000;
 
 let totalDeals = 0;
 
 class Node {
-    constructor(move, parent, currentDepth, board, usedDeals) {
+    constructor(move, parent, currentDepth, board, usedDeals, isHeuristic) {
         // this.id = id;
         this.move = move;
         this.parent = parent;
@@ -14,6 +14,13 @@ class Node {
         this.reachedFinalState = checkFinalState(this.board);
 
         this.usedDeals = usedDeals;
+
+        if (move == null) 
+            this.heuristic = 5;
+        else
+            this.heuristic = this.evaluateMove();
+        //if(isHeuristic) 
+            
     }
 
     expand() {
@@ -27,10 +34,10 @@ class Node {
         let validMoves = getValidMoves(this.board);
 
         
-        if (this.currentDepth < 1) {
+        if (totalDeals < MAX_DEALS) {
             console.log("Using deal...");
             let boardDealNode = deal(this.board);
-            // totalDeals++;
+            totalDeals++;
             children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals+1));
         }
 
@@ -48,6 +55,39 @@ class Node {
         
         return children;
     }
+
+    evaluateMove() {
+        let score = 0; // minor score -> better solution 
+    
+        if (this.board[this.move.p1.y][this.move.p1.x] + this.board[this.move.p2.y][this.move.p2.x] == 10) { // sum = 10 first 
+            if (this.move.p1.x == this.move.p2.x) // vertical matches first
+                score += 1;
+            else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
+                score += 3;
+        }   
+        else if (this.board[this.move.p1.y][this.move.p1.x] == this.board[this.move.p2.y][this.move.p2.x]) { // same digits last
+            if (this.move.p1.x == this.move.p2.x) // vertical matches first
+                score += 2;
+            else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
+                score += 4;
+        }
+        
+        let numCells = this.board.length * this.board[0].length;
+        let percentageEmpty =  this.countEmpty() / numCells;
+        score += percentageEmpty * this.currentDepth;
+
+        return score;
+    }
+
+    countEmpty() {
+        let count = 0;
+        for (let y = 0; y < this.board.length; ++y)
+            for (let x = 0; x < this.board[y].length; ++x)
+                if (this.board[y][x] == 0) count++;
+            
+        return count;
+    }
+
 }
 
 
@@ -71,6 +111,11 @@ function getValidMoves(board) {
     }
     return moves;
 }
+
+
+
+
+
 
 function getValidMovesCell(board, x, y) {
     let moves = [];
