@@ -4,7 +4,7 @@ const MAX_DEPTH = 1000;
 let totalDeals = 0;
 
 class Node {
-    constructor(move, parent, currentDepth, board, usedDeals, isHeuristic) {
+    constructor(move, parent, currentDepth, board, usedDeals) {
         // this.id = id;
         this.move = move;
         this.parent = parent;
@@ -15,10 +15,10 @@ class Node {
 
         this.usedDeals = usedDeals;
 
-        if (move == null) 
-            this.heuristic = 5;
-        else
-            this.heuristic = this.evaluateMove();
+        this.validMoves = getValidMoves(this.board);
+        this.heuristic = this.evaluateMove(this.validMoves);
+        // console.log(this.heuristic);
+        
         //if(isHeuristic) 
             
     }
@@ -31,24 +31,22 @@ class Node {
         }
 
         let children = [];
-        let validMoves = getValidMoves(this.board);
 
-        
-        if (totalDeals < MAX_DEALS) {
+        if (this.usedDeals < MAX_DEALS) {
             console.log("Using deal...");
             let boardDealNode = deal(this.board);
-            totalDeals++;
-            children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals+1));
-        }
+            //totalDeals++;
+            children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
+        } 
 
-        for(let i = 0; i < validMoves.length; ++i) {
+        for(let i = 0; i < this.validMoves.length; ++i) {
             let newBoard = [];
 
             // Clone board
             for (let j = 0; j < this.board.length; ++j)
                 newBoard[j] = this.board[j].slice();
             
-            let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]),this.usedDeals);
+            let newNode = new Node(this.validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, this.validMoves[i]),this.usedDeals);
             children.push(newNode);
         }
        
@@ -56,25 +54,37 @@ class Node {
         return children;
     }
 
-    evaluateMove() {
+    evaluateMove(moves) {
+        // Deals case
+
+        if (this.move == null) {
+            // console.log("hello");
+            if (this.checkExistsVerticalMatchesOrSumTenPairs(moves)) {
+                // console.log('hello again :)');
+                return 1000;
+            }
+            else return 0;
+        }
+
         let score = 0; // minor score -> better solution 
-    
-        if (this.board[this.move.p1.y][this.move.p1.x] + this.board[this.move.p2.y][this.move.p2.x] == 10) { // sum = 10 first 
-            if (this.move.p1.x == this.move.p2.x) // vertical matches first
-                score += 1;
-            else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
-                score += 3;
-        }   
-        else if (this.board[this.move.p1.y][this.move.p1.x] == this.board[this.move.p2.y][this.move.p2.x]) { // same digits last
-            if (this.move.p1.x == this.move.p2.x) // vertical matches first
-                score += 2;
-            else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
-                score += 4;
+        if(this.parent != null) {
+            if (this.parent.board[this.move.p1.y][this.move.p1.x] + this.parent.board[this.move.p2.y][this.move.p2.x] == 10) { // sum = 10 first 
+                if (this.move.p1.x == this.move.p2.x) // vertical matches first
+                    score += 0;
+                else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
+                    score += 2;
+            }   
+            else if (this.parent.board[this.move.p1.y][this.move.p1.x] == this.parent.board[this.move.p2.y][this.move.p2.x]) { // same digits last
+                if (this.move.p1.x == this.move.p2.x) // vertical matches first
+                    score += 3;
+                else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
+                    score += 4;
+            }
         }
         
         let numCells = this.board.length * this.board[0].length;
         let percentageEmpty =  this.countEmpty() / numCells;
-        score += percentageEmpty * this.currentDepth;
+        score += percentageEmpty * (1 / this.currentDepth);
 
         return score;
     }
@@ -87,7 +97,17 @@ class Node {
             
         return count;
     }
-
+    
+    checkExistsVerticalMatchesOrSumTenPairs(moves) {
+        for (let i = 0; i < moves.length; ++i)
+            if (moves[i] != null && this.parent != null) {
+                if((this.parent.board[moves[i].p1.y][moves[i].p1.x] + this.parent.board[moves[i].p2.y][moves[i].p2.x] == 10) || moves[i].p1.x == moves[i].p2.x) {
+                    return true;
+                }
+                    
+            }
+        return false;
+    }
 }
 
 
@@ -111,10 +131,6 @@ function getValidMoves(board) {
     }
     return moves;
 }
-
-
-
-
 
 
 function getValidMovesCell(board, x, y) {

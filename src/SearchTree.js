@@ -14,7 +14,8 @@ class SearchTree {
         // this.result = this.dfs(new Node(null, null, 0, initialBoard, 0), null);
         // this.result = this.bfs(new Node(null, null, 0, initialBoard, 0));
         // this.result = this.iterativeDeepening(new Node(null, null, 0, initialBoard, 0));
-        this.result = this.greedy(new Node(null, null, 0, initialBoard, 0));
+        // this.result = this.greedy(new Node(null, null, 0, initialBoard, 0));
+        this.result = this.a_star(new Node(null, null, 0, initialBoard, 0));
         
         //this.result = this.dfsWithPriority(new Node(null, null, 0, initialBoard, 0), null);
         
@@ -22,7 +23,7 @@ class SearchTree {
         if (this.result == -1)
             console.log("Could not find a solution!");
         else
-            console.log('Yeah boy!' + this.result);
+            console.log('Yeah boy!');
     }
     
     buildSolution(node) {
@@ -42,11 +43,10 @@ class SearchTree {
         queue.enqueue(root, root.heuristic);
         let totalMoves = 0;
 
-        while(queue.length != 1) {
+        while(queue.items.length > 0) {
             //let newNode = chooseBestChild(queue);
-            let newNode = queue.dequeueRear().element;
+            let newNode = queue.dequeue().element;
             totalMoves++;
-            // console.log(newNode);
 
             // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
             //     console.log("Already visited");
@@ -66,6 +66,48 @@ class SearchTree {
 
             for (let i = 0; i < children.length; ++i)
                 queue.enqueue(children[i], children[i].heuristic);
+        }
+    }
+
+    a_star(root) {
+        let queue = new PriorityQueue();
+        queue.enqueue(root, root.heuristic); // distance on root is 0
+        let totalMoves = 0;
+        let count = 0;
+        while(queue.items.length > 0) {
+            //let newNode = chooseBestChild(queue);
+            let newNode = queue.dequeue().element;
+            totalMoves++;
+            // console.log('................................. QUEUE .................................');
+            // for(let i = 0; i < queue.items.length; i++) {
+            //     console.log(queue.items[i].element);
+            // }
+            // count++;
+            // console.log("SELECTED NODE: ");
+            // console.log(newNode);
+
+            // if(count == 2)
+            //     break;
+            // console.log(newNode);
+
+            // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
+            //     console.log("Already visited");
+            //     continue;
+            // }
+            if(newNode.reachedFinalState) {
+                console.log("Found a solution:");
+                console.log(this.buildSolution(newNode));
+                // console.log(path);
+                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
+                return newNode;
+            }
+
+            // visitedBoards.push(newNode.board.toString());
+            
+            let children = newNode.expand();
+
+            for (let i = 0; i < children.length; ++i)
+                queue.enqueue(children[i], children[i].heuristic + children[i].currentDepth);
         }
     }
 
@@ -212,10 +254,6 @@ class SearchTree {
         }
 
         console.log('Could not find a solution');
-    }
-
-    heuristic(node) {
-        return node.evaluateMove();
     }
 
     checkAlreadyVisited(visitedBoards, board) {
