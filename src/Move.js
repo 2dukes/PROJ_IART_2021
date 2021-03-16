@@ -1,8 +1,11 @@
 
 class Move {
-    constructor(p1, p2) {
+    constructor(p1, p2, startNumber, endNumber) {
         this.p1 = p1;
         this.p2 = p2;
+
+        this.startNumber = startNumber;
+        this.endNumber = endNumber;
     }
 
     equals(m2) { //moves with same pair of cells (no matter the order)

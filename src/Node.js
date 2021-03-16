@@ -57,30 +57,39 @@ class Node {
     evaluateMove(moves) {
         // Deals case
 
-        if (this.move == null) {
-            // console.log("hello");
-            if (this.checkExistsVerticalMatchesOrSumTenPairs(moves)) {
-                // console.log('hello again :)');
-                return 1000;
-            }
-            else return 0;
-        }
+        
 
-        let score = 0; // minor score -> better solution 
-        if(this.parent != null) {
-            if (this.parent.board[this.move.p1.y][this.move.p1.x] + this.parent.board[this.move.p2.y][this.move.p2.x] == 10) { // sum = 10 first 
-                if (this.move.p1.x == this.move.p2.x) // vertical matches first
-                    score += 0;
-                else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
-                    score += 2;
-            }   
-            else if (this.parent.board[this.move.p1.y][this.move.p1.x] == this.parent.board[this.move.p2.y][this.move.p2.x]) { // same digits last
-                if (this.move.p1.x == this.move.p2.x) // vertical matches first
-                    score += 3;
-                else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
-                    score += 4;
-            }
-        }
+        // if (this.move == null) {
+            
+        //     if (this.parent == null) return 10;
+        //     if (this.parent.validMoves.length == 0)
+        //         return -10;
+
+        //     // console.log("hello");
+        //     if (this.checkExistsVerticalMatchesOrSumTenPairs(moves)) {
+        //         // console.log('hello again :)');
+        //         return this.currentDepth + 5;
+        //     }
+        //     else return -1;
+        // }
+
+        // let score = 0; // minor score -> better solution 
+        // if(this.parent != null) {
+        //     if (this.move.startNumber + this.move.endNumber == 10) { // sum = 10 first 
+        //         if (this.move.p1.x == this.move.p2.x) // vertical matches first
+        //             score += 0;
+        //         else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
+        //             score += 2;
+        //     }   
+        //     else if (this.move.startNumber == this.move.endNumber) { // same digits last
+        //         if (this.move.p1.x == this.move.p2.x) // vertical matches first
+        //             score += 3;
+        //         else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
+        //             score += 4;
+        //     }
+        // }
+
+        let score = 0;
         
         let numCells = this.board.length * this.board[0].length;
         let percentageEmpty =  this.countEmpty() / numCells;
@@ -100,11 +109,11 @@ class Node {
     
     checkExistsVerticalMatchesOrSumTenPairs(moves) {
         for (let i = 0; i < moves.length; ++i)
-            if (moves[i] != null && this.parent != null) {
-                if((this.parent.board[moves[i].p1.y][moves[i].p1.x] + this.parent.board[moves[i].p2.y][moves[i].p2.x] == 10) || moves[i].p1.x == moves[i].p2.x) {
-                    return true;
-                }
-                    
+            if (moves[i] != null) {
+                // console.log(this.parent.board);
+                // console.log(moves[i]);
+                if((moves[i].startNumber + moves[i].endNumber == 10) || moves[i].p1.x == moves[i].p2.x) 
+                    return true;    
             }
         return false;
     }
@@ -144,7 +153,7 @@ function getValidMovesCell(board, x, y) {
             // Columns
             if (board[y][x] == n || board[y][x] + n == 10) {
                 moves.push(
-                    new Move(new Position(initX, initY), new Position(x, y))
+                    new Move(new Position(initX, initY), new Position(x, y), board[initY][initX], board[y][x])
                 );
                 break;
             } else if (board[y][x] == 0) continue;
@@ -169,7 +178,7 @@ function getValidMovesCell(board, x, y) {
             // Lines
             if (board[y][x] == n || board[y][x] + n == 10) {
                 moves.push(
-                    new Move(new Position(initX, initY), new Position(x, y))
+                    new Move(new Position(initX, initY), new Position(x, y), board[initY][initX], board[y][x])
                 );
                 break;
             } else if (board[y][x] == 0) {

@@ -41,13 +41,20 @@ class SearchTree {
         
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
-        let totalMoves = 0;
+        let count = 0;
 
         while(queue.items.length > 0) {
             //let newNode = chooseBestChild(queue);
             let newNode = queue.dequeue().element;
-            totalMoves++;
+            // for(let i = 0; i < queue.items.length; i++) {
+            //     console.log(queue.items[i].element);
+            // }
+            // count++;
+            // console.log("SELECTED NODE: ");
+            // console.log(newNode);
 
+            // if(count == 7)
+            //     break;
             // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
             //     console.log("Already visited");
             //     continue;
@@ -72,12 +79,12 @@ class SearchTree {
     a_star(root) {
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic); // distance on root is 0
-        let totalMoves = 0;
-        let count = 0;
+        // let count = 0;
+
         while(queue.items.length > 0) {
             //let newNode = chooseBestChild(queue);
             let newNode = queue.dequeue().element;
-            totalMoves++;
+
             // console.log('................................. QUEUE .................................');
             // for(let i = 0; i < queue.items.length; i++) {
             //     console.log(queue.items[i].element);
@@ -86,9 +93,8 @@ class SearchTree {
             // console.log("SELECTED NODE: ");
             // console.log(newNode);
 
-            // if(count == 2)
-            //     break;
-            // console.log(newNode);
+            // if(count == 7)
+                // break;
 
             // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
             //     console.log("Already visited");
