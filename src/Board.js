@@ -8,7 +8,7 @@ class Board {
 	}
 
 	initBoard() {
-		this.board = [
+		//this.board = [
 			// [0, 2, 3, 4, 5, 6, 7, 8, 9],
 			// [0, 1, 1, 2, 1, 3, 1, 4, 1],
 			// [0, 1, 6, 1, 7, 1, 8, 1, 9]
@@ -48,16 +48,23 @@ class Board {
 			[3,6,1,6,1,1,8,9,6],
 			[5,4,5,6,8,2,5,0,0] */
 
-			[8,2,6,5,3,8,9,5,2],
+			/* [8,2,6,5,3,8,9,5,2],
 			[1,7,3,7,5,1,5,7,6],
-			[5,4,3,1,9,9,9,5,4]
+			[5,4,3,1,9,9,9,5,4] */
 
 
 			/* [1,2,3,4,5,6,7,8,9],
 			[1,1,1,2,1,3,1,4,1],
 			[5,1,6,1,7,1,8,1,9] */
 
-		];
+		// 	[1,4,3,4,8,6,7,8,9],
+		// 	[1,3,1,5,3,4,1,4,1],
+		// 	[5,2,6,1,7,1,8,4,9]
+
+		// ];
+
+		this.buildRandomBoard();
+
 		this.drawBoard();
 		document.querySelector("body button#deal").addEventListener("click", this.deal.bind(this));
         document.querySelector("body button#hints").addEventListener("click", this.giveHints.bind(this));
@@ -66,6 +73,17 @@ class Board {
 	// [1,2,3,4,5,6,7,8,9],
 	// [1,1,1,2,1,3,1,4,1],
 	// [5,1,6,1,7,1,8,1,9]
+
+	buildRandomBoard() {
+		this.board = [];
+		for (let i = 0; i < 3; ++i) {
+			let aux = [];
+			for (let j = 0; j < 9; ++j) {
+				aux.push(Math.floor(Math.random() * Math.floor(9))+1);
+			}
+			this.board.push(aux);
+		}
+	}
 
 
 	drawBoard() {
