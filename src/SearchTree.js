@@ -11,13 +11,13 @@ class SearchTree {
 
         this.queue = [];
 
-        // this.result = this.dfs(new Node(null, null, 0, initialBoard, 0), null);
+        this.result = this.dfs(new Node(null, null, 0, initialBoard, 0), null);
         // this.result = this.bfs(new Node(null, null, 0, initialBoard, 0));
         // this.result = this.iterativeDeepening(new Node(null, null, 0, initialBoard, 0));
         // this.result = this.greedy(new Node(null, null, 0, initialBoard, 0));
-        this.result = this.a_star(new Node(null, null, 0, initialBoard, 0));
+        //this.result = this.a_star(new Node(null, null, 0, initialBoard, 0));
         
-        //this.result = this.dfsWithPriority(new Node(null, null, 0, initialBoard, 0), null);
+        // this.result = this.dfsWithPriority(new Node(null, null, 0, initialBoard, 0), null);
         
 
         if (this.result == -1)
@@ -41,11 +41,12 @@ class SearchTree {
         
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
-        let count = 0;
+        //let count = 0;
 
         while(queue.items.length > 0) {
             //let newNode = chooseBestChild(queue);
             let newNode = queue.dequeue().element;
+
             // for(let i = 0; i < queue.items.length; i++) {
             //     console.log(queue.items[i].element);
             // }
@@ -71,8 +72,11 @@ class SearchTree {
             
             let children = newNode.expand();
 
-            for (let i = 0; i < children.length; ++i)
+            for (let i = 0; i < children.length; ++i) {
+                //console.log(children[i].heuristic);
                 queue.enqueue(children[i], children[i].heuristic);
+            }
+                
         }
     }
 

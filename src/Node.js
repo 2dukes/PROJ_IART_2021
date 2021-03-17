@@ -32,10 +32,10 @@ class Node {
 
         let children = [];
 
-        if (this.usedDeals < MAX_DEALS) {
+        if (totalDeals < MAX_DEALS /* || this.validMoves.length == 0 */) {
             console.log("Using deal...");
             let boardDealNode = deal(this.board);
-            //totalDeals++;
+            totalDeals++;
             children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
         } 
 
@@ -55,41 +55,38 @@ class Node {
     }
 
     evaluateMove(moves) {
+
         // Deals case
 
-        
-
-        // if (this.move == null) {
+        if (this.move == null) {
             
-        //     if (this.parent == null) return 10;
-        //     if (this.parent.validMoves.length == 0)
-        //         return -10;
+            if (this.parent == null) return 10;
+            if (this.parent.validMoves.length == 0)
+                return -10;
 
-        //     // console.log("hello");
-        //     if (this.checkExistsVerticalMatchesOrSumTenPairs(moves)) {
-        //         // console.log('hello again :)');
-        //         return this.currentDepth + 5;
-        //     }
-        //     else return -1;
-        // }
+            // console.log("hello");
+            if (this.checkExistsVerticalMatchesOrSumTenPairs(moves)) {
+                // console.log('hello again :)');
+                return this.currentDepth + 5;
+            }
+            else return -1;
+        }
 
-        // let score = 0; // minor score -> better solution 
-        // if(this.parent != null) {
-        //     if (this.move.startNumber + this.move.endNumber == 10) { // sum = 10 first 
-        //         if (this.move.p1.x == this.move.p2.x) // vertical matches first
-        //             score += 0;
-        //         else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
-        //             score += 2;
-        //     }   
-        //     else if (this.move.startNumber == this.move.endNumber) { // same digits last
-        //         if (this.move.p1.x == this.move.p2.x) // vertical matches first
-        //             score += 3;
-        //         else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
-        //             score += 4;
-        //     }
-        // }
-
-        let score = 0;
+        let score = 0; // minor score -> better solution 
+        if(this.parent != null) {
+            if (this.move.startNumber + this.move.endNumber == 10) { // sum = 10 first 
+                if (this.move.p1.x == this.move.p2.x) // vertical matches first
+                    score += 0;
+                else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
+                    score += 2;
+            }   
+            else if (this.move.startNumber == this.move.endNumber) { // same digits last
+                if (this.move.p1.x == this.move.p2.x) // vertical matches first
+                    score += 3;
+                else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
+                    score += 4;
+            }
+        }
         
         let numCells = this.board.length * this.board[0].length;
         let percentageEmpty =  this.countEmpty() / numCells;
@@ -117,6 +114,35 @@ class Node {
             }
         return false;
     }
+
+    getBestMove(moves) {
+        //let bestMove;
+        let maxNumMoves = Number.MIN_VALUE;
+
+        let numMoves;
+        for (let i = 0; i < moves.length; ++i) {
+
+            let newBoard0 = [];
+
+            // Clone board
+            for (let j = 0; j < this.board.length; ++j)
+                newBoard0[j] = this.board[j].slice();
+
+            let newBoard = applyMove(newBoard0, moves[i]);
+
+            numMoves = getValidMoves(newBoard).length;
+
+            if (numMoves > maxNumMoves) {
+                maxNumMoves = numMoves;
+                //bestMove = moves[i];
+            }
+        }
+
+        return maxNumMoves;
+
+        //return bestMove;
+    }
+
 }
 
 
