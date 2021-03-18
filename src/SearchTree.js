@@ -11,11 +11,11 @@ class SearchTree {
 
         this.queue = [];
 
-        this.result = this.dfs(new Node(null, null, 0, initialBoard, 0), null);
+        // this.result = this.dfs(new Node(null, null, 0, initialBoard, 0), null);
         // this.result = this.bfs(new Node(null, null, 0, initialBoard, 0));
         // this.result = this.iterativeDeepening(new Node(null, null, 0, initialBoard, 0));
-        // this.result = this.greedy(new Node(null, null, 0, initialBoard, 0));
-        //this.result = this.a_star(new Node(null, null, 0, initialBoard, 0));
+        this.result = this.greedy(new Node(null, null, 0, initialBoard, 0));
+        // this.result = this.a_star(new Node(null, null, 0, initialBoard, 0));
         
         // this.result = this.dfsWithPriority(new Node(null, null, 0, initialBoard, 0), null);
         
@@ -41,20 +41,22 @@ class SearchTree {
         
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
-        //let count = 0;
+        let count = 0;
 
         while(queue.items.length > 0) {
             //let newNode = chooseBestChild(queue);
             let newNode = queue.dequeue().element;
 
+            // console.log('................................. QUEUE .................................');
             // for(let i = 0; i < queue.items.length; i++) {
-            //     console.log(queue.items[i].element);
+            //     if(queue.items[i].element.heuristic == 0)
+            //         console.log(queue.items[i].element);
             // }
             // count++;
             // console.log("SELECTED NODE: ");
             // console.log(newNode);
 
-            // if(count == 7)
+            // if(count == 30)
             //     break;
             // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
             //     console.log("Already visited");
@@ -83,22 +85,22 @@ class SearchTree {
     a_star(root) {
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic); // distance on root is 0
-        // let count = 0;
+        let count = 0;
 
         while(queue.items.length > 0) {
             //let newNode = chooseBestChild(queue);
             let newNode = queue.dequeue().element;
 
-            // console.log('................................. QUEUE .................................');
-            // for(let i = 0; i < queue.items.length; i++) {
-            //     console.log(queue.items[i].element);
-            // }
-            // count++;
-            // console.log("SELECTED NODE: ");
-            // console.log(newNode);
+            console.log('................................. QUEUE .................................');
+            for(let i = 0; i < queue.items.length; i++) {
+                console.log(queue.items[i].element);
+            }
+            count++;
+            console.log("SELECTED NODE: ");
+            console.log(newNode);
 
-            // if(count == 7)
-                // break;
+            if(count == 4)
+                break;
 
             // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
             //     console.log("Already visited");
