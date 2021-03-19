@@ -91,16 +91,16 @@ class SearchTree {
             //let newNode = chooseBestChild(queue);
             let newNode = queue.dequeue().element;
 
-            console.log('................................. QUEUE .................................');
-            for(let i = 0; i < queue.items.length; i++) {
-                console.log(queue.items[i].element);
-            }
-            count++;
-            console.log("SELECTED NODE: ");
-            console.log(newNode);
+            // console.log('................................. QUEUE .................................');
+            // for(let i = 0; i < queue.items.length; i++) {
+            //     console.log(queue.items[i].element);
+            // }
+            // count++;
+            // console.log("SELECTED NODE: ");
+            // console.log(newNode);
 
-            if(count == 4)
-                break;
+            // if(count == 4)
+            //     break;
 
             // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
             //     console.log("Already visited");

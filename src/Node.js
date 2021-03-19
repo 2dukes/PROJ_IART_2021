@@ -121,7 +121,7 @@ class Node {
 
         // Deal + Hints
         let st3CB = this.cloneBoard();
-        let nH_3 = this.hintsEvaluate(st3CB).numberOfMoves;
+        let nH_3 = this.hintsEvaluate(deal(st3CB)).numberOfMoves;
 
         let minHeuristic = Math.min(nH_1, nH_2, nH_3);
         if(minHeuristic == 0)
