@@ -1,29 +1,6 @@
 class SearchTree {
     constructor(initialBoard) {
-        /* this.queue = [new Node(null, null, 0, initialBoard)];
-        this.visitedNodes = [...this.queue]; */
-        
-        //root.expand()[0].expand()[0].expand()[0].expand()[0].expand()[0].expand()[0];
-
-        //this.bfs();
-
-        // this.visitedNodes = [];
         this.initialBoard = initialBoard;
-        // this.queue = [];
-
-        // this.result = this.dfs(new Node(null, null, 0, initialBoard, 0), null);
-        // this.result = this.bfs(new Node(null, null, 0, initialBoard, 0));
-        // this.result = this.iterativeDeepening(new Node(null, null, 0, initialBoard, 0));
-        // this.result = this.greedy(new Node(null, null, 0, initialBoard, 0));
-        // this.result = this.a_star(new Node(null, null, 0, initialBoard, 0));
-        
-        // this.result = this.dfsWithPriority(new Node(null, null, 0, initialBoard, 0), null);
-        
-
-        if (this.result == -1)
-            console.log("Could not find a solution!");
-        else
-            console.log('Yeah boy!');
     }
 
     run(method) {
@@ -64,7 +41,10 @@ class SearchTree {
         queue.enqueue(root, root.heuristic);
         // let count = 0;
 
-        while(queue.items.length > 0) {
+        let t0 = performance.now();
+        let timeout = 20000;
+
+        while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
             //let newNode = chooseBestChild(queue);
             let newNode = queue.dequeue().element;
 
@@ -102,6 +82,8 @@ class SearchTree {
             }
                 
         }
+
+        throw "Solution not Found!";
     }
 
     a_star(root) {
@@ -109,7 +91,10 @@ class SearchTree {
         queue.enqueue(root, root.heuristic); // distance on root is 0
         let count = 0;
 
-        while(queue.items.length > 0) {
+        let t0 = performance.now();
+        let timeout = 20000;
+
+        while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
             //let newNode = chooseBestChild(queue);
             let newNode = queue.dequeue().element;
 
@@ -158,7 +143,10 @@ class SearchTree {
     iterativeDeepening(root) {
         let depth = 0, result = -1;
 
-        while(result == -1) {
+        let t0 = performance.now();
+        let timeout = 20000;
+
+        while(result == -1 && (performance.now() - t0) < timeout) {
             result = this.dfs(root, depth);
             console.log("Depth: " + depth);
             depth++;
@@ -172,8 +160,11 @@ class SearchTree {
         let queue = [root];
         // let board = root.board;
         // queue.push(node);
+
+        let t0 = performance.now();
+        let timeout = 20000;
         
-        while(queue.length != 0) {
+        while(queue.length != 0 && (performance.now() - t0) < timeout) {
             let newNode = queue.shift();
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
@@ -208,7 +199,10 @@ class SearchTree {
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
         
-        while(queue.length != 0) {
+        let t0 = performance.now();
+        let timeout = 20000;
+        
+        while(queue.length != 0 && (performance.now() - t0) < timeout) {
             //let newNode = queue.shift();
 
             let newNode = queue.dequeueRear().element;
@@ -265,8 +259,11 @@ class SearchTree {
         let queue = [root];
         // let board = root.board;
         // queue.push(node);
+
+        let t0 = performance.now();
+        let timeout = 20000;
         
-        while(queue.length != 0) {
+        while(queue.length != 0 && (performance.now() - t0) < timeout) {
             let newNode = queue.shift();
             // console.log(newNode.currentDepth);
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {

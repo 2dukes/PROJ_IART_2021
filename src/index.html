@@ -20,15 +20,58 @@
         <link href="./style.css" rel="stylesheet">
         
         <script src="./main.js"></script>
+        <script src="../resources/boards.json"></script>
 
     </head>
-    <body class="text-center">
-        <h1 class="mt-4">TenPair</h1>
-        <table id="board" class="table text-center">
-            <tbody></tbody>
-        </table>
-    <button type="button" id="hints" class="btn-primary m-5 px-5">Hints</button>
-    <button type="button" id="deal" class="btn-primary m-5 px-5">Deal</button>
+    <body>
+        <h1 class="mt-4 text-center">TenPair</h1>
 
+
+        <div id="menu">
+            <div class="container choose-game-mode my-4">
+                <h3>Game mode:</h3>
+                <button class="button btn-primary me-2">Human Play</button>
+                <button class="button btn-primary ms-2">Computer Play</button>
+            </div>
+
+            <div class="container choose-board my-4">
+                <h3>Game board:</h3>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Board
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#">Board 1</a></li>
+                        <li><a class="dropdown-item" href="#">Board 2</a></li>
+                        <li><a class="dropdown-item" href="#">Board 3</a></li>
+                        <li><a class="dropdown-item" href="#">Board 4</a></li>
+                        <li><a class="dropdown-item" href="#">Random Board</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="main_game">
+            <table id="board" class="table text-center">
+                <tbody></tbody>
+            </table>
+
+            <div class="row mt-5" id="hint_deal">
+                <div class="d-flex col-6 justify-content-end">
+                    <button type="button" id="hints" class="btn-primary px-5">Hints</button>
+                </div>
+                <div class="d-flex col-6 justify-content-start">
+                    <button type="button" id="deal" class="btn-primary px-5">Deal</button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="d-flex col-6 justify-content-end">
+                    <button type="button" id="back" class="btn-secondary px-5"><i class="fas fa-backward"></i></button>
+                </div>
+                <div class="d-flex col-6 justify-content-start">
+                    <button type="button" id="forward" class="btn-secondary px-5"><i class="fas fa-forward"></i></button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

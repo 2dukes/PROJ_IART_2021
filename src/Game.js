@@ -14,15 +14,21 @@ class Game {
 		this.searchTree = new SearchTree(this.board.board);
     }
 
+    // setTimeout(function(){ alert("Hello"); }, 3000);
     async run() {
-        let solution = this.runSearch("greedy");
-        this.drawSolution(solution);
+        try {
+            let solution = this.runSearch("greedy");
+            this.drawSolution(solution);
+        } catch (err) {
+            console.log(err.toString());
+        }
+       
     }
 
     runSearch(method) {
-        var t0 = performance.now();
+        let t0 = performance.now();
         let solution = this.searchTree.run(method);
-		var t1 = performance.now();
+		let t1 = performance.now();
 		console.log("Call to function took " + (t1 - t0) + " milliseconds.");
         return solution;
     }
@@ -72,14 +78,13 @@ class Game {
 
     async drawSolution(solution) {
         //this.board.board = solution[0].board;
+        this.board.setDrawSolution(true);
         for (let i = 0; i < solution.length; ++i) {
             this.board.board = solution[i].board;
             this.board.clearBoard();
             this.board.drawBoard();
-            await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 10));
         }
+        this.board.setDrawSolution(false);
     }
 }	
-
-
-

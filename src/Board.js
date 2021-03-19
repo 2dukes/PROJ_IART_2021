@@ -4,6 +4,8 @@ class Board {
 
 		this.game = game;
 
+		this.isSolution = false;
+
 		this.initBoard();
 	}
 
@@ -52,9 +54,9 @@ class Board {
 			// [5,4,3,1,9,9,9,5,4]
 
 
-			// [1,2,3,4,5,6,7,8,9],
-			// [1,1,1,2,1,3,1,4,1],
-			// [5,1,6,1,7,1,8,1,9]
+			[1,2,3,4,5,6,7,8,9],
+			[1,1,1,2,1,3,1,4,1],
+			[5,1,6,1,7,1,8,1,9]
 
 			// [1,4,3,4,8,6,7,8,9],
 			// [1,3,1,5,3,4,1,4,1],
@@ -64,12 +66,12 @@ class Board {
 			// [7, 5, 3, 9, 9, 2, 9, 7, 1],
 			// [8, 9, 3, 5, 2, 6, 4, 9, 3]
 			
-			[8, 7, 7, 8, 5, 4, 1, 8, 8],
-			[7, 8, 4, 9, 2, 1, 9, 6, 7],
-			[4, 4, 7, 9, 9, 7, 3, 9, 9]
+			// [8, 7, 7, 8, 5, 4, 1, 8, 8],
+			// [7, 8, 4, 9, 2, 1, 9, 6, 7],
+			// [4, 4, 7, 9, 9, 7, 3, 9, 9]
 		];
 
-		this.buildRandomBoard();
+		// this.buildRandomBoard();
 		console.log(this.board);
 
 		this.drawBoard();
@@ -84,7 +86,7 @@ class Board {
 
 	buildRandomBoard() {
 		this.board = [];
-		for (let i = 0; i < 3; ++i) {
+		for (let i = 0; i < 9; ++i) {
 			let aux = [];
 			for (let j = 0; j < 9; ++j) {
 				aux.push(Math.floor(Math.random() * Math.floor(9))+1);
@@ -122,10 +124,12 @@ class Board {
 					tableCell.innerHTML = number;
 					tableCell.style.color = colors[number - 1];
 					
-					tableCell.addEventListener(
-						"click",
-						this.game.handleCellClick.bind(this.game)
-					);
+					if(!this.isSolution) {
+						tableCell.addEventListener(
+							"click",
+							this.game.handleCellClick.bind(this.game)
+						);
+					}
 				} else {
                     tableCell.innerHTML = "0";
                     tableCell.style.color = "#171717";
@@ -229,10 +233,12 @@ class Board {
 					tableCell.innerHTML = number;
 					tableCell.style.color = colors[number - 1];
 
-					tableCell.addEventListener(
-						"click",
-						this.game.handleCellClick.bind(this.game)
-					);
+					if(!this.isSolution) {
+						tableCell.addEventListener(
+							"click",
+							this.game.handleCellClick.bind(this.game)
+						);
+					}
 				} else {
                     tableCell.innerHTML = "0";
                     tableCell.style.color = "#171717";
@@ -278,6 +284,40 @@ class Board {
 		}
 	}
 
+	setDrawSolution(isSolution) {
+		let dealButton = document.querySelector("body button#deal");
+		let hintButton = document.querySelector("body button#hints");
+		let backButton = document.querySelector("body button#back");
+		let forwardButton = document.querySelector("body button#forward");
+
+		if(isSolution && !this.isSolution) {
+			dealButton.removeEventListener("click", this.deal.bind(this));
+			dealButton.style.display = "none";
+
+			hintButton.removeEventListener("click", this.giveHints.bind(this));
+			hintButton.style.display = "none";
+
+			backButton.addEventListener("click", this.deal.bind(this));
+			backButton.style.display = "block";
+
+			forwardButton.addEventListener("click", this.giveHints.bind(this));
+			forwardButton.style.display = "block";
+
+		} else if(!isSolution) {
+			dealButton.addEventListener("click", this.deal.bind(this));
+			dealButton.style.display = "block";
+
+			hintButton.addEventListener("click", this.giveHints.bind(this));
+			hintButton.style.display = "block";
+
+			backButton.removeEventListener("click", this.deal.bind(this));
+			backButton.style.display = "none";
+
+			forwardButton.removeEventListener("click", this.giveHints.bind(this));
+			forwardButton.style.display = "none";
+		}
+		this.isSolution = isSolution;
+	}
 
 	
 }
