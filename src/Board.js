@@ -52,19 +52,28 @@ class Board {
 			// [5,4,3,1,9,9,9,5,4]
 
 
-			[1,2,3,4,5,6,7,8,9],
-			[1,1,1,2,1,3,1,4,1],
-			[5,1,6,1,7,1,8,1,9] 
+			// [1,2,3,4,5,6,7,8,9],
+			// [1,1,1,2,1,3,1,4,1],
+			// [5,1,6,1,7,1,8,1,9]
 
 			// [1,4,3,4,8,6,7,8,9],
 			// [1,3,1,5,3,4,1,4,1],
 			// [5,2,6,1,7,1,8,4,9]
 
+			// [9, 8, 9, 8, 3, 4, 2, 1, 3],
+			// [7, 5, 3, 9, 9, 2, 9, 7, 1],
+			// [8, 9, 3, 5, 2, 6, 4, 9, 3]
+			
+			[8, 7, 7, 8, 5, 4, 1, 8, 8],
+			[7, 8, 4, 9, 2, 1, 9, 6, 7],
+			[4, 4, 7, 9, 9, 7, 3, 9, 9]
 		];
 
-		// this.buildRandomBoard();
+		this.buildRandomBoard();
+		console.log(this.board);
 
 		this.drawBoard();
+
 		document.querySelector("body button#deal").addEventListener("click", this.deal.bind(this));
         document.querySelector("body button#hints").addEventListener("click", this.giveHints.bind(this));
 	}
@@ -84,6 +93,9 @@ class Board {
 		}
 	}
 
+	clearBoard() {
+		document.querySelector("table#board tbody").innerHTML = "";
+	}
 
 	drawBoard() {
 		let colors = [
@@ -109,7 +121,7 @@ class Board {
                     tableCell.classList.add("selectable");
 					tableCell.innerHTML = number;
 					tableCell.style.color = colors[number - 1];
-
+					
 					tableCell.addEventListener(
 						"click",
 						this.game.handleCellClick.bind(this.game)

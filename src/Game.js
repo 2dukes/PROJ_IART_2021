@@ -10,10 +10,21 @@ class Game {
         this.firstY = -1;
         
         this.hints = false;
+
+		this.searchTree = new SearchTree(this.board.board);
     }
 
-    run() {
-        // getValidMoves(this.board.board);
+    async run() {
+        let solution = this.runSearch("greedy");
+        this.drawSolution(solution);
+    }
+
+    runSearch(method) {
+        var t0 = performance.now();
+        let solution = this.searchTree.run(method);
+		var t1 = performance.now();
+		console.log("Call to function took " + (t1 - t0) + " milliseconds.");
+        return solution;
     }
 
     handleCellClick(event) {
@@ -58,7 +69,17 @@ class Game {
     showHints() {
         this.hints = true;
     }
-	
 
+    async drawSolution(solution) {
+        //this.board.board = solution[0].board;
+        for (let i = 0; i < solution.length; ++i) {
+            this.board.board = solution[i].board;
+            this.board.clearBoard();
+            this.board.drawBoard();
+            await new Promise(r => setTimeout(r, 1000));
+        }
+    }
 }	
+
+
 
