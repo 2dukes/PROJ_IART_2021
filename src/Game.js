@@ -1,7 +1,7 @@
 
 class Game {
     constructor() {
-        this.board = new Board(this);
+        this.board = new Board(this, null);
         console.log("Starting game...");
         
         this.state = 0; // 0 - choose first cell, 1 - choose second cell
@@ -12,10 +12,17 @@ class Game {
         this.hints = false;
 
 		this.searchTree = new SearchTree(this.board.board);
+
+        // this.boards = JSON.parse()
+
+        this.currentBoard = [[1,3,7,3,1,4,1,9,6],
+                            [3,6,1,6,1,1,8,9,6],
+                            [5,4,5,6,8,2,5,0,0]];
     }
 
-    // setTimeout(function(){ alert("Hello"); }, 3000);
     async run() {
+        this.board.initBoard(this.currentBoard);
+
         try {
             let solution = this.runSearch("greedy");
             this.drawSolution(solution);
@@ -38,7 +45,6 @@ class Game {
             if(this.state == 0) {
                 this.state = 1;
 
-                // event.target.style.backgroundColor = "#666666";
                 event.target.classList.add("selected");
 
                 let xAndY = event.target.id.split('c');
@@ -77,7 +83,7 @@ class Game {
     }
 
     async drawSolution(solution) {
-        //this.board.board = solution[0].board;
+
         this.board.setDrawSolution(true);
         for (let i = 0; i < solution.length; ++i) {
             this.board.board = solution[i].board;

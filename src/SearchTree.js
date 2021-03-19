@@ -35,30 +35,17 @@ class SearchTree {
 
     greedy(root) {
         let visitedBoards = [];
-        //let queue = [root];
         
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
-        // let count = 0;
 
         let t0 = performance.now();
         let timeout = 20000;
 
         while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
-            //let newNode = chooseBestChild(queue);
+
             let newNode = queue.dequeue().element;
 
-            // console.log('................................. QUEUE .................................');
-            // for(let i = 0; i < queue.items.length; i++) {
-            //     if(queue.items[i].element.heuristic == 0)
-            //         console.log(queue.items[i].element);
-            // }
-            // count++;
-            // console.log("SELECTED NODE: ");
-            // console.log(newNode);
-
-            // if(count == 30)
-            //     break;
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
                 continue;
@@ -67,8 +54,6 @@ class SearchTree {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
 
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
 
@@ -77,12 +62,10 @@ class SearchTree {
             let children = newNode.expand();
 
             for (let i = 0; i < children.length; ++i) {
-                //console.log(children[i].heuristic);
                 queue.enqueue(children[i], children[i].heuristic);
             }
                 
         }
-
         throw "Solution not Found!";
     }
 
@@ -95,34 +78,15 @@ class SearchTree {
         let timeout = 20000;
 
         while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
-            //let newNode = chooseBestChild(queue);
+
             let newNode = queue.dequeue().element;
 
-            // console.log('................................. QUEUE .................................');
-            // for(let i = 0; i < queue.items.length; i++) {
-            //     console.log(queue.items[i].element);
-            // }
-            // count++;
-            // console.log("SELECTED NODE: ");
-            // console.log(newNode);
-
-            // if(count == 4)
-            //     break;
-
-            // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
-            //     console.log("Already visited");
-            //     continue;
-            // }
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
 
-            // visitedBoards.push(newNode.board.toString());
-            
             let children = newNode.expand();
 
             for (let i = 0; i < children.length; ++i)
@@ -158,8 +122,6 @@ class SearchTree {
     dfs(root, limit) {
         let visitedBoards = [];
         let queue = [root];
-        // let board = root.board;
-        // queue.push(node);
 
         let t0 = performance.now();
         let timeout = 20000;
@@ -173,13 +135,10 @@ class SearchTree {
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
             
             if(newNode.currentDepth < limit || limit == null) {
-                // console.log(newNode.currentDepth);
                 visitedBoards.push(newNode.board.toString());
                 
                 let children = newNode.expand();
@@ -192,9 +151,6 @@ class SearchTree {
 
     dfsWithPriority(root, limit) {
         let visitedBoards = [];
-        //let queue = [root];
-        // let board = root.board;
-        // queue.push(node);
 
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
@@ -203,7 +159,6 @@ class SearchTree {
         let timeout = 20000;
         
         while(queue.length != 0 && (performance.now() - t0) < timeout) {
-            //let newNode = queue.shift();
 
             let newNode = queue.dequeueRear().element;
 
@@ -214,24 +169,18 @@ class SearchTree {
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
             
             if(newNode.currentDepth < limit || limit == null) {
-                // console.log(newNode.currentDepth);
                 visitedBoards.push(newNode.board.toString());
                 
                 let children = newNode.expand();
-                //queue.unshift(...children);
 
                 for (let i = 0; i < children.length; ++i)
                     queue.enqueue(children[i], children[i].heuristic);
-
             }
         }
-
         return -1;
     }
 
@@ -257,15 +206,13 @@ class SearchTree {
     bfs(root) {
         let visitedBoards = [];
         let queue = [root];
-        // let board = root.board;
-        // queue.push(node);
 
         let t0 = performance.now();
         let timeout = 20000;
         
         while(queue.length != 0 && (performance.now() - t0) < timeout) {
             let newNode = queue.shift();
-            // console.log(newNode.currentDepth);
+
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
                 continue;
@@ -273,8 +220,6 @@ class SearchTree {
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
 
@@ -291,8 +236,6 @@ class SearchTree {
         for (let i = 0; i < visitedBoards; ++i) {
             if(visitedBoards[i] === board)
                 return true;
-            // if (checkEqualBoards(board, visitedBoards[i]))
-            //     return true;
         }
         return false;
     }
