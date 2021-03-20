@@ -5,7 +5,9 @@ class Board {
 		this.game = game;
 		this.board = board;
 
-		this.isSolution = false;
+		this.isSolution = false;~
+
+		this.initBoard();
 	}
 
 	initBoard() {
@@ -98,6 +100,9 @@ class Board {
 	}
 
 	drawBoard() {
+		if(this.board == null)
+			return;
+
 		let colors = [
 			"#00add4",
 			"#c03ffc",

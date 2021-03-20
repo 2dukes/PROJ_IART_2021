@@ -51,18 +51,18 @@ function getUrlVars() {
 }
 //Include additional files here
 serialInclude([
-	"./Move.js",
-    "./Position.js",
-	"./Board.js",
-	"./Node.js",
-	"./Game.js",
-	"./SearchTree.js",
-	"./PriorityQueue.js",
+	"./src/Move.js",
+    "./src/Position.js",
+	"./src/Board.js",
+	"./src/Node.js",
+	"./src/Game.js",
+	"./src/SearchTree.js",
+	"./src/PriorityQueue.js",
 
 	(main = function () {
 		
 		let game = new Game();
 
-		game.run();
+		// game.run();
 	}),
 ]);

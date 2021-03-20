@@ -1,7 +1,5 @@
-
 class Game {
     constructor() {
-        this.board = new Board(this, null);
         console.log("Starting game...");
         
         this.state = 0; // 0 - choose first cell, 1 - choose second cell
@@ -11,24 +9,35 @@ class Game {
         
         this.hints = false;
 
+
+        this.boardsSel = document.getElementById("board_sel");
+        this.boardsSel.addEventListener("change", this.changeBoard.bind(this));
+        
+        this.boards = this.getBoards();
+        this.board = new Board(this, this.boards[this.boardsSel.value].board);
+
+
 		this.searchTree = new SearchTree(this.board.board);
 
-        // this.boards = JSON.parse()
+        // this.currentBoard = [[1,3,7,3,1,4,1,9,6],
+        //                     [3,6,1,6,1,1,8,9,6],
+        //                     [5,4,5,6,8,2,5,0,0]];
 
-        this.currentBoard = [[1,3,7,3,1,4,1,9,6],
-                            [3,6,1,6,1,1,8,9,6],
-                            [5,4,5,6,8,2,5,0,0]];
+        this.solution = null;
+
+        this.running = false;
     }
 
-    async run() {
-        this.board.initBoard(this.currentBoard);
-
+    run() {
+        // this.board.initBoard(this.currentBoard);
+        this.running = true;
         try {
-            let solution = this.runSearch("greedy");
-            this.drawSolution(solution);
+            this.solution = this.runSearch("greedy");
+            this.drawSolution();
         } catch (err) {
             console.log(err.toString());
         }
+        this.running = false;
        
     }
 
@@ -38,6 +47,15 @@ class Game {
 		let t1 = performance.now();
 		console.log("Call to function took " + (t1 - t0) + " milliseconds.");
         return solution;
+    }
+
+    getBoards() {
+        let request = new XMLHttpRequest();
+        request.open("GET", "../resources/boards.json", false);
+        request.send(null)
+        let boards = JSON.parse(request.responseText).boards;
+        
+        return boards;
     }
 
     handleCellClick(event) {
@@ -82,7 +100,7 @@ class Game {
         this.hints = true;
     }
 
-    async drawSolution(solution) {
+    async drawSolutionAnimation(solution) {
 
         this.board.setDrawSolution(true);
         for (let i = 0; i < solution.length; ++i) {
@@ -92,5 +110,24 @@ class Game {
             await new Promise(r => setTimeout(r, 10));
         }
         this.board.setDrawSolution(false);
+    }
+
+    drawSolution(solution) {
+
+    }
+
+    solutionForward() {
+
+    }
+
+    solutionBack() {
+
+    }
+
+    changeBoard() {
+        if(!this.running) {
+            this.board.setBoard(this.boards[this.boardsSel.value]);
+            console.log(this.board.board);
+        }
     }
 }	
