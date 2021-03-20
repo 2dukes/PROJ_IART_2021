@@ -1,24 +1,23 @@
 class SearchTree {
-    constructor(initialBoard) {
-        this.initialBoard = initialBoard;
+    constructor() {
     }
 
-    run(method) {
+    run(method, board) {
         switch(method) {
             case "dfs":
-                this.result = this.dfs(new Node(null, null, 0, this.initialBoard, 0), null);
+                this.result = this.dfs(new Node(null, null, 0, board, 0), null);
                 break;
             case "bfs":
-                this.result = this.bfs(new Node(null, null, 0, this.initialBoard, 0));
+                this.result = this.bfs(new Node(null, null, 0, board, 0));
                 break;
             case "iterative":
-                this.result = this.iterativeDeepening(new Node(null, null, 0, this.initialBoard, 0));
+                this.result = this.iterativeDeepening(new Node(null, null, 0, board, 0));
                 break;
             case "greedy":
-                this.result = this.greedy(new Node(null, null, 0, this.initialBoard, 0));
+                this.result = this.greedy(new Node(null, null, 0, board, 0));
                 break;
             case "a_star":
-                this.result = this.a_star(new Node(null, null, 0, this.initialBoard, 0));
+                this.result = this.a_star(new Node(null, null, 0, board, 0));
                 break;  
         }
         return this.buildSolution(this.result);
@@ -34,6 +33,7 @@ class SearchTree {
     }
 
     greedy(root) {
+        
         let visitedBoards = [];
         
         let queue = new PriorityQueue();

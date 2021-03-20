@@ -17,7 +17,7 @@ class Game {
         this.board = new Board(this, this.boards[this.boardsSel.value].board);
 
 
-		this.searchTree = new SearchTree(this.board.board);
+		this.searchTree = new SearchTree();
 
         // this.currentBoard = [[1,3,7,3,1,4,1,9,6],
         //                     [3,6,1,6,1,1,8,9,6],
@@ -26,14 +26,19 @@ class Game {
         this.solution = null;
 
         this.running = false;
+        this.startButton = document.getElementById("start_button");
+        this.startButton.addEventListener("click", this.run.bind(this));
     }
 
     run() {
+        if(this.running)
+            return;
         // this.board.initBoard(this.currentBoard);
         this.running = true;
         try {
-            this.solution = this.runSearch("greedy");
-            this.drawSolution();
+            console.log(this.board.board);
+            this.solution = this.runSearch("greedy", this.board);
+            this.drawSolutionAnimation(this.solution);
         } catch (err) {
             console.log(err.toString());
         }
@@ -43,7 +48,7 @@ class Game {
 
     runSearch(method) {
         let t0 = performance.now();
-        let solution = this.searchTree.run(method);
+        let solution = this.searchTree.run(method, this.board.board);
 		let t1 = performance.now();
 		console.log("Call to function took " + (t1 - t0) + " milliseconds.");
         return solution;
@@ -107,12 +112,12 @@ class Game {
             this.board.board = solution[i].board;
             this.board.clearBoard();
             this.board.drawBoard();
-            await new Promise(r => setTimeout(r, 10));
+            await new Promise(r => setTimeout(r, 500));
         }
         this.board.setDrawSolution(false);
     }
 
-    drawSolution(solution) {
+    drawSolution() {
 
     }
 
@@ -126,7 +131,7 @@ class Game {
 
     changeBoard() {
         if(!this.running) {
-            this.board.setBoard(this.boards[this.boardsSel.value]);
+            this.board.setBoard(this.boards[this.boardsSel.value].board);
             console.log(this.board.board);
         }
     }
