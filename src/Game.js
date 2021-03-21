@@ -2,7 +2,11 @@ let MENU = 0;
 let FIRST_CELL = 1;
 let SECOND_CELL = 2;
 let VIEW_SOL = 3;
-let END = 4;
+let PLAY_SOL = 4;
+let END = 5;
+
+let HUMAN = 0;
+let COMPUTER = 1;
 
 class Game {
     constructor() {
@@ -15,6 +19,7 @@ class Game {
         
         this.hints = false;
 
+        this.switchToMenu();
 
         this.boardsSel = document.getElementById("board_sel");
         this.boardsSel.addEventListener("change", this.changeBoard.bind(this));
@@ -22,12 +27,11 @@ class Game {
         this.boards = this.getBoards();
         this.board = new Board(this, this.boards[this.boardsSel.value].board);
 
+        this.modesSel = document.getElementById("mode_sel");
+        this.modesSel.addEventListener("change", this.changeMode.bind(this));
+        this.mode = this.modesSel.value;
 
 		this.searchTree = new SearchTree();
-
-        // this.currentBoard = [[1,3,7,3,1,4,1,9,6],
-        //                     [3,6,1,6,1,1,8,9,6],
-        //                     [5,4,5,6,8,2,5,0,0]];
 
         this.solution = null;
 
@@ -35,26 +39,44 @@ class Game {
 
         this.startButton = document.getElementById("start_button");
         this.startButton.addEventListener("click", this.run.bind(this));
+
     }
 
     run() {
         if(this.running)
             return;
         // this.board.initBoard(this.currentBoard);
-        
-        this.board.setBoard(this.boards[this.boardsSel.value].board);
+        this.switchToGame();
 
-        this.running = true;
-        try {
-            console.log(this.board.board);
-            this.solution = this.runSearch("greedy", this.board);
-            // this.drawSolutionAnimation(this.solution);
-            this.drawSolution();
-        } catch (err) {
-            console.log(err.toString());
-        }
-        this.running = false;
+        this.board.setBoard(this.boards[this.boardsSel.value].board);
+        this.board.initBoard();
+
+        if(this.mode == COMPUTER) {
+            this.running = true;
+            try {
+                console.log(this.board.board);
+                this.solution = this.runSearch("greedy", this.board);
+                // this.drawSolutionAnimation(this.solution);
+                this.drawSolution();
+            } catch (err) {
+                console.log(err.toString());
+            }
+            this.running = false;
+
+        } else if(this.mode == HUMAN) {
+            this.board.drawBoard();
+            this.state = FIRST_CELL;
+        } 
        
+    }
+
+    reset() {
+        this.board.setBoard(this.boards[this.boardsSel.value].board);
+        this.state = MENU;
+        this.solution = null;
+        this.hints = false;
+        this.firstX = -1;
+        this.firstY = -1;
     }
 
     runSearch(method) {
@@ -84,6 +106,8 @@ class Game {
                 let xAndY = event.target.id.split('c');
                 this.firstY = parseInt(xAndY[0]);
                 this.firstX = parseInt(xAndY[1]);
+
+                this.state = SECOND_CELL;
 
             } else if(this.state == SECOND_CELL) {
                 let x, y;
@@ -166,5 +190,27 @@ class Game {
             this.board.setBoard(this.boards[this.boardsSel.value].board);
             console.log(this.board.board);
         }
+    }
+
+    changeMode() {
+        if(this.state == MENU) {
+            this.mode = this.modesSel.value;
+        }
+    }
+
+    switchToGame() {
+        let menuDiv = document.getElementById("menu");
+        menuDiv.style.display = "none";
+
+        let gameDiv = document.getElementById("main_game");
+        gameDiv.style.display = "block";
+    }
+
+    switchToMenu() {
+        let menuDiv = document.getElementById("menu");
+        menuDiv.style.display = "block";
+
+        let gameDiv = document.getElementById("main_game");
+        gameDiv.style.display = "none";
     }
 }	
