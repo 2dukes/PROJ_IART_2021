@@ -1,8 +1,14 @@
+let MENU = 0;
+let FIRST_CELL = 1;
+let SECOND_CELL = 2;
+let VIEW_SOL = 3;
+let END = 4;
+
 class Game {
     constructor() {
         console.log("Starting game...");
         
-        this.state = 0; // 0 - choose first cell, 1 - choose second cell
+        this.state = MENU; // 0 - choose first cell, 1 - choose second cell
 
         this.firstX = -1;
         this.firstY = -1;
@@ -26,6 +32,7 @@ class Game {
         this.solution = null;
 
         this.running = false;
+
         this.startButton = document.getElementById("start_button");
         this.startButton.addEventListener("click", this.run.bind(this));
     }
@@ -34,11 +41,15 @@ class Game {
         if(this.running)
             return;
         // this.board.initBoard(this.currentBoard);
+        
+        this.board.setBoard(this.boards[this.boardsSel.value].board);
+
         this.running = true;
         try {
             console.log(this.board.board);
             this.solution = this.runSearch("greedy", this.board);
-            this.drawSolutionAnimation(this.solution);
+            // this.drawSolutionAnimation(this.solution);
+            this.drawSolution();
         } catch (err) {
             console.log(err.toString());
         }
@@ -65,7 +76,7 @@ class Game {
 
     handleCellClick(event) {
         if(event.target.innerHTML != 0) {
-            if(this.state == 0) {
+            if(this.state == FIRST_CELL) {
                 this.state = 1;
 
                 event.target.classList.add("selected");
@@ -74,14 +85,14 @@ class Game {
                 this.firstY = parseInt(xAndY[0]);
                 this.firstX = parseInt(xAndY[1]);
 
-            } else {
+            } else if(this.state == SECOND_CELL) {
                 let x, y;
                 let xAndY = event.target.id.split('c');
                 y = parseInt(xAndY[0]); 
                 x = parseInt(xAndY[1]);
 
                 if(x == this.firstX && y == this.firstY) {
-                    this.state = 0;
+                    this.state = FIRST_CELL;
                     
                     this.board.removeSelected();
 
@@ -89,7 +100,7 @@ class Game {
                 }
 
                 if(this.board.handleCellOrder(this.firstX, this.firstY, x, y)) {
-                    this.state = 0;
+                    this.state = FIRST_CELL;
                     this.board.emptyCell(x,y);
                     this.board.emptyCell(this.firstX, this.firstY);
                     if(this.hints) {
@@ -107,6 +118,8 @@ class Game {
 
     async drawSolutionAnimation(solution) {
 
+        this.state = VIEW_SOL;
+
         this.board.setDrawSolution(true);
         for (let i = 0; i < solution.length; ++i) {
             this.board.board = solution[i].board;
@@ -115,18 +128,37 @@ class Game {
             await new Promise(r => setTimeout(r, 500));
         }
         this.board.setDrawSolution(false);
+
+        this.state = END;
     }
 
     drawSolution() {
-
-    }
-
-    solutionForward() {
-
+        this.board.setDrawSolution(true);
+        this.state = VIEW_SOL;
+        this.currentMoveView = 0;
+        this.updateBoardSolution();
     }
 
     solutionBack() {
+        if(this.currentMoveView > 0 && this.state == VIEW_SOL) {
+            console.log("back");
+            this.currentMoveView--;
+            this.updateBoardSolution();
+        }
+    }
 
+    solutionForward() {
+        if(this.currentMoveView < this.solution.length - 1 && this.state == VIEW_SOL) {
+            console.log("forward");
+            this.currentMoveView++;
+            this.updateBoardSolution();
+        }
+    }
+
+    updateBoardSolution() {
+        this.board.board = this.solution[this.currentMoveView].board;
+        this.board.clearBoard();
+        this.board.drawBoard();
     }
 
     changeBoard() {

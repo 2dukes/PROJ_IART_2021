@@ -5,7 +5,7 @@ class Board {
 		this.game = game;
 		this.board = board;
 
-		this.isSolution = false;~
+		this.isSolution = false;
 
 		this.initBoard();
 	}
@@ -300,10 +300,10 @@ class Board {
 			hintButton.removeEventListener("click", this.giveHints.bind(this));
 			hintButton.style.display = "none";
 
-			backButton.addEventListener("click", this.deal.bind(this));
+			backButton.addEventListener("click", this.game.solutionBack.bind(this.game));
 			backButton.style.display = "block";
 
-			forwardButton.addEventListener("click", this.giveHints.bind(this));
+			forwardButton.addEventListener("click", this.game.solutionForward.bind(this.game));
 			forwardButton.style.display = "block";
 
 		} else if(!isSolution) {
@@ -313,10 +313,10 @@ class Board {
 			hintButton.addEventListener("click", this.giveHints.bind(this));
 			hintButton.style.display = "block";
 
-			backButton.removeEventListener("click", this.deal.bind(this));
+			backButton.removeEventListener("click", this.game.solutionBack.bind(this.game));
 			backButton.style.display = "none";
 
-			forwardButton.removeEventListener("click", this.giveHints.bind(this));
+			forwardButton.removeEventListener("click", this.game.solutionForward.bind(this.game));
 			forwardButton.style.display = "none";
 		}
 		this.isSolution = isSolution;
