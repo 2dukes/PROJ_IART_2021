@@ -7,6 +7,7 @@ class Board {
 
 		this.isSolution = false;
 
+		
 	}
 
 	initBoard() {
@@ -71,10 +72,7 @@ class Board {
 		// ];
 
 		// this.buildRandomBoard();
-		console.log(this.board);
 
-		document.querySelector("body button#deal").addEventListener("click", this.deal.bind(this));
-        document.querySelector("body button#hints").addEventListener("click", this.giveHints.bind(this));
 	}
 
 	setBoard(board) {
@@ -97,6 +95,7 @@ class Board {
 	}
 
 	drawBoard() {
+		this.clearBoard();
 		if(this.board == null)
 			return;
 

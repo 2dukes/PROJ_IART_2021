@@ -19,8 +19,6 @@ class Game {
         
         this.hints = false;
 
-        this.switchToMenu();
-
         this.boardsSel = document.getElementById("board_sel");
         this.boardsSel.addEventListener("change", this.changeBoard.bind(this));
         
@@ -40,16 +38,20 @@ class Game {
         this.startButton = document.getElementById("start_button");
         this.startButton.addEventListener("click", this.run.bind(this));
 
+        this.backMenuButton = document.getElementById("backMenu");
+        this.backMenuButton.addEventListener("click", this.switchToMenu.bind(this));
+
+        this.board.setDrawSolution(false);
     }
 
     run() {
         if(this.running)
             return;
         // this.board.initBoard(this.currentBoard);
-        this.switchToGame();
+        // this.reset();
 
-        this.board.setBoard(this.boards[this.boardsSel.value].board);
-        this.board.initBoard();
+        // this.board.setBoard(this.boards[this.boardsSel.value].board);
+        // this.board.initBoard();
 
         if(this.mode == COMPUTER) {
             this.running = true;
@@ -64,14 +66,20 @@ class Game {
             this.running = false;
 
         } else if(this.mode == HUMAN) {
+            this.board.clearBoard();
             this.board.drawBoard();
             this.state = FIRST_CELL;
         } 
+
+        this.switchToGame();
        
     }
 
     reset() {
+        console.log("Resetting");
+        this.boards = this.getBoards();
         this.board.setBoard(this.boards[this.boardsSel.value].board);
+        // this.board.initBoard();
         this.state = MENU;
         this.solution = null;
         this.hints = false;
@@ -204,6 +212,9 @@ class Game {
 
         let gameDiv = document.getElementById("main_game");
         gameDiv.style.display = "block";
+
+        let menuButtonDiv = document.getElementById("back_to_menu");
+        menuButtonDiv.style.display = "block";
     }
 
     switchToMenu() {
@@ -212,5 +223,11 @@ class Game {
 
         let gameDiv = document.getElementById("main_game");
         gameDiv.style.display = "none";
+
+        let menuButtonDiv = document.getElementById("back_to_menu");
+        menuButtonDiv.style.display = "none";
+
+        this.reset();
+
     }
 }	
