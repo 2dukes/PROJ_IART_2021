@@ -51,24 +51,18 @@ function getUrlVars() {
 }
 //Include additional files here
 serialInclude([
-	"./Move.js",
-    "./Position.js",
-	"./Board.js",
-	"./Node.js",
-	"./Game.js",
-	"./SearchTree.js",
-	"./PriorityQueue.js",
+	"./src/Move.js",
+    "./src/Position.js",
+	"./src/Board.js",
+	"./src/Node.js",
+	"./src/Game.js",
+	"./src/SearchTree.js",
+	"./src/PriorityQueue.js",
 
 	(main = function () {
 		
 		let game = new Game();
 
-		game.run();
-		
-		// CABUM!
-		var t0 = performance.now();
-		let searchTree = new SearchTree(game.board.board);
-		var t1 = performance.now();
-		console.log("Call to function took " + (t1 - t0) + " milliseconds.");
+		// game.run();
 	}),
 ]);

@@ -1,31 +1,28 @@
 class SearchTree {
-    constructor(initialBoard) {
-        /* this.queue = [new Node(null, null, 0, initialBoard)];
-        this.visitedNodes = [...this.queue]; */
-        
-        //root.expand()[0].expand()[0].expand()[0].expand()[0].expand()[0].expand()[0];
-
-        //this.bfs();
-
-        // this.visitedNodes = [];
-
-        this.queue = [];
-
-        this.result = this.dfs(new Node(null, null, 0, initialBoard, 0), null);
-        // this.result = this.bfs(new Node(null, null, 0, initialBoard, 0));
-        // this.result = this.iterativeDeepening(new Node(null, null, 0, initialBoard, 0));
-        // this.result = this.greedy(new Node(null, null, 0, initialBoard, 0));
-        //this.result = this.a_star(new Node(null, null, 0, initialBoard, 0));
-        
-        // this.result = this.dfsWithPriority(new Node(null, null, 0, initialBoard, 0), null);
-        
-
-        if (this.result == -1)
-            console.log("Could not find a solution!");
-        else
-            console.log('Yeah boy!');
+    constructor() {
     }
-    
+
+    run(method, board) {
+        switch(method) {
+            case "dfs":
+                this.result = this.dfs(new Node(null, null, 0, board, 0), null);
+                break;
+            case "bfs":
+                this.result = this.bfs(new Node(null, null, 0, board, 0));
+                break;
+            case "iterative":
+                this.result = this.iterativeDeepening(new Node(null, null, 0, board, 0));
+                break;
+            case "greedy":
+                this.result = this.greedy(new Node(null, null, 0, board, 0));
+                break;
+            case "a_star":
+                this.result = this.a_star(new Node(null, null, 0, board, 0));
+                break;  
+        }
+        return this.buildSolution(this.result);
+    }
+
     buildSolution(node) {
         let solution = [node];
         while(node.parent != null) {
@@ -36,84 +33,60 @@ class SearchTree {
     }
 
     greedy(root) {
-        // let visitedBoards = [];
-        //let queue = [root];
+        
+        let visitedBoards = [];
         
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
-        //let count = 0;
 
-        while(queue.items.length > 0) {
-            //let newNode = chooseBestChild(queue);
+        let t0 = performance.now();
+        let timeout = 20000;
+
+        while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
+
             let newNode = queue.dequeue().element;
 
-            // for(let i = 0; i < queue.items.length; i++) {
-            //     console.log(queue.items[i].element);
-            // }
-            // count++;
-            // console.log("SELECTED NODE: ");
-            // console.log(newNode);
-
-            // if(count == 7)
-            //     break;
-            // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
-            //     console.log("Already visited");
-            //     continue;
-            // }
+            if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
+                console.log("Already visited");
+                continue;
+            }
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
+
                 return newNode;
             }
 
-            // visitedBoards.push(newNode.board.toString());
+            visitedBoards.push(newNode.board.toString());
             
             let children = newNode.expand();
 
             for (let i = 0; i < children.length; ++i) {
-                //console.log(children[i].heuristic);
                 queue.enqueue(children[i], children[i].heuristic);
             }
                 
         }
+        throw "Solution not Found!";
     }
 
     a_star(root) {
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic); // distance on root is 0
-        // let count = 0;
+        let count = 0;
 
-        while(queue.items.length > 0) {
-            //let newNode = chooseBestChild(queue);
+        let t0 = performance.now();
+        let timeout = 20000;
+
+        while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
+
             let newNode = queue.dequeue().element;
 
-            // console.log('................................. QUEUE .................................');
-            // for(let i = 0; i < queue.items.length; i++) {
-            //     console.log(queue.items[i].element);
-            // }
-            // count++;
-            // console.log("SELECTED NODE: ");
-            // console.log(newNode);
-
-            // if(count == 7)
-                // break;
-
-            // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
-            //     console.log("Already visited");
-            //     continue;
-            // }
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
 
-            // visitedBoards.push(newNode.board.toString());
-            
             let children = newNode.expand();
 
             for (let i = 0; i < children.length; ++i)
@@ -134,7 +107,10 @@ class SearchTree {
     iterativeDeepening(root) {
         let depth = 0, result = -1;
 
-        while(result == -1) {
+        let t0 = performance.now();
+        let timeout = 20000;
+
+        while(result == -1 && (performance.now() - t0) < timeout) {
             result = this.dfs(root, depth);
             console.log("Depth: " + depth);
             depth++;
@@ -146,10 +122,11 @@ class SearchTree {
     dfs(root, limit) {
         let visitedBoards = [];
         let queue = [root];
-        // let board = root.board;
-        // queue.push(node);
+
+        let t0 = performance.now();
+        let timeout = 20000;
         
-        while(queue.length != 0) {
+        while(queue.length != 0 && (performance.now() - t0) < timeout) {
             let newNode = queue.shift();
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
@@ -158,13 +135,10 @@ class SearchTree {
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
             
             if(newNode.currentDepth < limit || limit == null) {
-                // console.log(newNode.currentDepth);
                 visitedBoards.push(newNode.board.toString());
                 
                 let children = newNode.expand();
@@ -177,15 +151,14 @@ class SearchTree {
 
     dfsWithPriority(root, limit) {
         let visitedBoards = [];
-        //let queue = [root];
-        // let board = root.board;
-        // queue.push(node);
 
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
         
-        while(queue.length != 0) {
-            //let newNode = queue.shift();
+        let t0 = performance.now();
+        let timeout = 20000;
+        
+        while(queue.length != 0 && (performance.now() - t0) < timeout) {
 
             let newNode = queue.dequeueRear().element;
 
@@ -196,24 +169,18 @@ class SearchTree {
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
             
             if(newNode.currentDepth < limit || limit == null) {
-                // console.log(newNode.currentDepth);
                 visitedBoards.push(newNode.board.toString());
                 
                 let children = newNode.expand();
-                //queue.unshift(...children);
 
                 for (let i = 0; i < children.length; ++i)
                     queue.enqueue(children[i], children[i].heuristic);
-
             }
         }
-
         return -1;
     }
 
@@ -239,12 +206,13 @@ class SearchTree {
     bfs(root) {
         let visitedBoards = [];
         let queue = [root];
-        // let board = root.board;
-        // queue.push(node);
+
+        let t0 = performance.now();
+        let timeout = 20000;
         
-        while(queue.length != 0) {
+        while(queue.length != 0 && (performance.now() - t0) < timeout) {
             let newNode = queue.shift();
-            // console.log(newNode.currentDepth);
+
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
                 continue;
@@ -252,8 +220,6 @@ class SearchTree {
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
-                // console.log(path);
-                // console.log("The solution has " + this.countNumMoves(path) + " moves and used " + this.countNumDeals(path) + " deals");
                 return newNode;
             }
 
@@ -270,12 +236,8 @@ class SearchTree {
         for (let i = 0; i < visitedBoards; ++i) {
             if(visitedBoards[i] === board)
                 return true;
-            // if (checkEqualBoards(board, visitedBoards[i]))
-            //     return true;
         }
         return false;
     }
-
-    
-
 }
+

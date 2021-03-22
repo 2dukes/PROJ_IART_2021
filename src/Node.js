@@ -16,7 +16,7 @@ class Node {
         this.usedDeals = usedDeals;
 
         this.validMoves = getValidMoves(this.board);
-        this.heuristic = this.evaluateMove(this.validMoves);
+        this.heuristic = this.evaluateMove();
         // console.log(this.heuristic);
         
         //if(isHeuristic) 
@@ -32,12 +32,15 @@ class Node {
 
         let children = [];
 
-        if (totalDeals < MAX_DEALS /* || this.validMoves.length == 0 */) {
-            console.log("Using deal...");
-            let boardDealNode = deal(this.board);
-            totalDeals++;
-            children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
-        } 
+        // if (totalDeals < MAX_DEALS /* || this.validMoves.length == 0 */) {
+        //     console.log("Using deal...");
+        // let boardDealNode = deal(this.board);
+        // totalDeals++;
+        // children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
+        // } 
+
+        // let boardDealNode = deal(this.board);
+        // children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
 
         for(let i = 0; i < this.validMoves.length; ++i) {
             let newBoard = [];
@@ -49,50 +52,81 @@ class Node {
             let newNode = new Node(this.validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, this.validMoves[i]),this.usedDeals);
             children.push(newNode);
         }
-       
-        
+
+        let boardDealNode = deal(this.board);
+        children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
+
         return children;
     }
 
-    evaluateMove(moves) {
-
-        // Deals case
-
-        if (this.move == null) {
+    countNotEmpty(board) {
+        let count = 0;
+        for (let y = 0; y < board.length; ++y)
+            for (let x = 0; x < board[y].length; ++x)
+                if (board[y][x] != 0) count++;
             
-            if (this.parent == null) return 10;
-            if (this.parent.validMoves.length == 0)
-                return -10;
+        return count;
+    }
 
-            // console.log("hello");
-            if (this.checkExistsVerticalMatchesOrSumTenPairs(moves)) {
-                // console.log('hello again :)');
-                return this.currentDepth + 5;
-            }
-            else return -1;
+    hintsEvaluate(auxBoard) {
+        let numberOfMoves = 0;
+        let validMove = getFirstValidMove(auxBoard);
+
+        while(validMove != null) {
+            numberOfMoves++;
+            applyMove(auxBoard, validMove); // Already modifies original auxBoard
+            validMove = getFirstValidMove(auxBoard);
         }
 
-        let score = 0; // minor score -> better solution 
-        if(this.parent != null) {
-            if (this.move.startNumber + this.move.endNumber == 10) { // sum = 10 first 
-                if (this.move.p1.x == this.move.p2.x) // vertical matches first
-                    score += 0;
-                else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
-                    score += 2;
-            }   
-            else if (this.move.startNumber == this.move.endNumber) { // same digits last
-                if (this.move.p1.x == this.move.p2.x) // vertical matches first
-                    score += 3;
-                else if (this.move.p1.y == this.move.p2.y) // horizontal matches last
-                    score += 4;
-            }
-        }
+        if(this.boardEmpty(auxBoard)) 
+            numberOfMoves = 0;
+
+        return {
+            // "notEmptyCell": this.countNotEmpty(auxBoard),
+            "finalBoard": auxBoard,
+            "numberOfMoves": numberOfMoves + this.countNotEmpty(auxBoard) / 2
+        };
+    }
+
+    boardEmpty(board) {
+        for (let y = 0; y < board.length; ++y)
+            for (let x = 0; x < board[y].length; ++x)
+                if (board[y][x] != 0) return false;
+
+        return true;
+    }
+
+    cloneBoard() {
+        let auxBoard = [];
+        for (let i = 0; i < this.board.length; ++i)
+            auxBoard[i] = this.board[i].slice();
         
-        let numCells = this.board.length * this.board[0].length;
-        let percentageEmpty =  this.countEmpty() / numCells;
-        score += percentageEmpty * (1 / this.currentDepth);
+        return auxBoard;
+    }
 
-        return score;
+    evaluateMove() {
+        // Hints
+        let st1CB = this.cloneBoard();
+        let nH_1 = this.hintsEvaluate(st1CB).numberOfMoves;
+
+        // Hints + Deal + Hints
+        let st2CB = this.cloneBoard();
+        let hints_st2_1 = this.hintsEvaluate(st2CB);
+        let hints_st2_2 = this.hintsEvaluate(deal(hints_st2_1.finalBoard));
+        let nH_2;
+        if(this.boardEmpty(hints_st2_2.finalBoard))
+            nH_2 = 0;
+        else
+            nH_2 = hints_st2_1.numberOfMoves + 1 + hints_st2_2.numberOfMoves;
+
+        // Deal + Hints
+        let st3CB = this.cloneBoard();
+        let nH_3 = this.hintsEvaluate(deal(st3CB)).numberOfMoves;
+
+        let minHeuristic = Math.min(nH_1, nH_2, nH_3);
+        if(minHeuristic == 0)
+            return -this.currentDepth; // Because we want him to select the one with higher depth when it finds a solution
+        return minHeuristic;
     }
 
     countEmpty() {
@@ -167,6 +201,19 @@ function getValidMoves(board) {
     return moves;
 }
 
+function getFirstValidMove(board) {
+    let moves = [];
+    for (let y = 0; y < board.length; ++y) {
+        for (let x = 0; x < 9; ++x) {
+            if (board[y][x] != 0) {
+                moves.push(...getValidMovesCell(board, x, y));
+                if(moves.length != 0)
+                    return moves[0];
+            }
+        }
+    }
+    return null;
+}
 
 function getValidMovesCell(board, x, y) {
     let moves = [];
