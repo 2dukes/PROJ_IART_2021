@@ -88,6 +88,29 @@ class Node {
         };
     }
 
+    hintsEvaluate2(auxBoard) {
+        let validMove = getFirstValidMove(auxBoard);
+
+        while(validMove != null) {
+            applyMove(auxBoard, validMove); // Already modifies original auxBoard
+            validMove = getFirstValidMove(auxBoard);
+        }
+
+        if(this.boardEmpty(auxBoard)) {
+            return {
+                // "notEmptyCell": this.countNotEmpty(auxBoard),
+                "finalBoard": auxBoard,
+                "numberOfMoves": 0
+            };
+        }
+
+        return {
+            // "notEmptyCell": this.countNotEmpty(auxBoard),
+            "finalBoard": auxBoard,
+            "numberOfMoves": this.countNotEmpty(auxBoard) / 2
+        };
+    }
+
     boardEmpty(board) {
         for (let y = 0; y < board.length; ++y)
             for (let x = 0; x < board[y].length; ++x)
@@ -129,11 +152,47 @@ class Node {
         return minHeuristic;
     }
 
-    countEmpty() {
+    evaluateMove2() {
+        let board = this.cloneBoard();
+        let numberOfMoves = getValidMoves(board).length;
+
+        let currentCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;        
+
+        
+
+        return currentCells/2 + numberOfMoves;
+    }
+
+    evaluateMove3() {
+        // Hints
+        let st1CB = this.cloneBoard();
+        let nH_1 = this.hintsEvaluate2(st1CB).numberOfMoves;
+
+        // Hints + Deal + Hints
+        let st2CB = this.cloneBoard();
+        let hints_st2_1 = this.hintsEvaluate2(st2CB);
+        let hints_st2_2 = this.hintsEvaluate2(deal(hints_st2_1.finalBoard));
+        let nH_2;
+        if(this.boardEmpty(hints_st2_2.finalBoard))
+            nH_2 = 0;
+        else
+            nH_2 = hints_st2_2.numberOfMoves;
+
+        // Deal + Hints
+        let st3CB = this.cloneBoard();
+        let nH_3 = this.hintsEvaluate2(deal(st3CB)).numberOfMoves;
+
+        let minHeuristic = Math.min(nH_1, nH_2, nH_3);
+        if(minHeuristic == 0)
+            return -this.currentDepth; // Because we want him to select the one with higher depth when it finds a solution
+        return minHeuristic;
+    }
+    
+    countEmpty(board) {
         let count = 0;
-        for (let y = 0; y < this.board.length; ++y)
-            for (let x = 0; x < this.board[y].length; ++x)
-                if (this.board[y][x] == 0) count++;
+        for (let y = 0; y < board.length; ++y)
+            for (let x = 0; x < board[y].length; ++x)
+                if (board[y][x] == 0) count++;
             
         return count;
     }

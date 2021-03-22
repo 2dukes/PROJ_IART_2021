@@ -5,53 +5,65 @@ class Board {
 		this.game = game;
 		this.board = board;
 
-		this.isSolution = false;
+		this.isSolution = false;	
 
-		
+		this.initBoard();
 	}
 
 	initBoard() {
-			// [0, 2, 3, 4, 5, 6, 7, 8, 9],
-			// [0, 1, 1, 2, 1, 3, 1, 4, 1],
-			// [0, 1, 6, 1, 7, 1, 8, 1, 9]
+		let dealButton = document.querySelector("body button#deal");
+		let hintButton = document.querySelector("body button#hints");
+		let backButton = document.querySelector("body button#back");
+		let forwardButton = document.querySelector("body button#forward");
+		
+		dealButton.addEventListener("click", this.deal.bind(this));
 
-			// [1,1,0,0,5,0,0,0,9],
-			// [0,0,3,0,0,0,7,0,0],
-			// [9,9,0,0,5,0,0,5,1],
- 
-			// [1,0,0,0,0,0,7,8,9],
-			// [1,0,0,0,0,0,0,0,0],
-			// [0,0,0,0,0,0,0,0,0],
-			// [0,0,0,0,0,0,7,8,9],
-			// [0,1,1,2,1,3,1,4,1],
-			// [0,1,6,1,7,1,8,1,9], 
+		hintButton.addEventListener("click", this.giveHints.bind(this));
 
-			// [1,2,3,4,5,6,7,8,9],
-			// [1,1,1,2,1,3,1,4,1],
-			// [5,1,6,1,7,1,8,1,9],
-			// [1,2,3,4,5,6,7,8,9],
-			// [1,1,1,2,1,3,1,4,1],
-			// [5,1,6,1,7,1,8,1,9],
-			// [1,2,3,4,5,6,7,8,9],
-			// [1,1,1,2,1,3,1,4,1],
-			// [5,1,6,1,7,1,8,1,9],
-			// [1,2,3,4,5,6,7,8,9],
-			// [1,1,1,2,1,3,1,4,1],
-			// [5,1,6,1,7,1,8,1,9],
-			// [1,2,3,4,5,6,7,8,9],
-			// [1,1,1,2,1,3,1,4,1],
-			// [5,1,6,1,7,1,8,1,9],
-			// [1,2,3,4,5,6,7,8,9],
-			// [1,1,1,2,1,3,1,4,1],
-			// [5,1,6,1,7,1,8,1,9],
+		backButton.addEventListener("click", this.game.solutionBack.bind(this.game));
 
-			// [1,3,7,3,1,4,1,9,6],
-			// [3,6,1,6,1,1,8,9,6],
-			// [5,4,5,6,8,2,5,0,0]
+		forwardButton.addEventListener("click", this.game.solutionForward.bind(this.game));
+		// [0, 2, 3, 4, 5, 6, 7, 8, 9],
+		// [0, 1, 1, 2, 1, 3, 1, 4, 1],
+		// [0, 1, 6, 1, 7, 1, 8, 1, 9]
 
-			// [8,2,6,5,3,8,9,5,2],
-			// [1,7,3,7,5,1,5,7,6],
-			// [5,4,3,1,9,9,9,5,4]
+		// [1,1,0,0,5,0,0,0,9],
+		// [0,0,3,0,0,0,7,0,0],
+		// [9,9,0,0,5,0,0,5,1],
+
+		// [1,0,0,0,0,0,7,8,9],
+		// [1,0,0,0,0,0,0,0,0],
+		// [0,0,0,0,0,0,0,0,0],
+		// [0,0,0,0,0,0,7,8,9],
+		// [0,1,1,2,1,3,1,4,1],
+		// [0,1,6,1,7,1,8,1,9], 
+
+		// [1,2,3,4,5,6,7,8,9],
+		// [1,1,1,2,1,3,1,4,1],
+		// [5,1,6,1,7,1,8,1,9],
+		// [1,2,3,4,5,6,7,8,9],
+		// [1,1,1,2,1,3,1,4,1],
+		// [5,1,6,1,7,1,8,1,9],
+		// [1,2,3,4,5,6,7,8,9],
+		// [1,1,1,2,1,3,1,4,1],
+		// [5,1,6,1,7,1,8,1,9],
+		// [1,2,3,4,5,6,7,8,9],
+		// [1,1,1,2,1,3,1,4,1],
+		// [5,1,6,1,7,1,8,1,9],
+		// [1,2,3,4,5,6,7,8,9],
+		// [1,1,1,2,1,3,1,4,1],
+		// [5,1,6,1,7,1,8,1,9],
+		// [1,2,3,4,5,6,7,8,9],
+		// [1,1,1,2,1,3,1,4,1],
+		// [5,1,6,1,7,1,8,1,9],
+
+		// [1,3,7,3,1,4,1,9,6],
+		// [3,6,1,6,1,1,8,9,6],
+		// [5,4,5,6,8,2,5,0,0]
+
+		// [8,2,6,5,3,8,9,5,2],
+		// [1,7,3,7,5,1,5,7,6],
+		// [5,4,3,1,9,9,9,5,4]
 
 
 		// 	[1,2,3,4,5,6,7,8,9],
@@ -289,30 +301,16 @@ class Board {
 		let backButton = document.querySelector("body button#back");
 		let forwardButton = document.querySelector("body button#forward");
 
-		if(isSolution && !this.isSolution) {
-			dealButton.removeEventListener("click", this.deal.bind(this));
+		if(isSolution) {
 			dealButton.style.display = "none";
-
-			hintButton.removeEventListener("click", this.giveHints.bind(this));
 			hintButton.style.display = "none";
-
-			backButton.addEventListener("click", this.game.solutionBack.bind(this.game));
 			backButton.style.display = "block";
-
-			forwardButton.addEventListener("click", this.game.solutionForward.bind(this.game));
 			forwardButton.style.display = "block";
 
 		} else if(!isSolution) {
-			dealButton.addEventListener("click", this.deal.bind(this));
 			dealButton.style.display = "block";
-
-			hintButton.addEventListener("click", this.giveHints.bind(this));
 			hintButton.style.display = "block";
-
-			backButton.removeEventListener("click", this.game.solutionBack.bind(this.game));
 			backButton.style.display = "none";
-
-			forwardButton.removeEventListener("click", this.game.solutionForward.bind(this.game));
 			forwardButton.style.display = "none";
 		}
 		this.isSolution = isSolution;

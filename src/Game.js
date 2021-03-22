@@ -51,7 +51,6 @@ class Game {
         this.backMenuButton = document.getElementById("backMenu");
         this.backMenuButton.addEventListener("click", this.switchToMenu.bind(this));
 
-        this.board.setDrawSolution(false);
     }
 
     run() {
