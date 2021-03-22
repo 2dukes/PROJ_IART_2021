@@ -220,7 +220,7 @@ class Game {
 
     changeAlgorithm() {
         if(!this.running) {
-            
+            this.algorithm = this.algSel.value;
         }
     }
 
