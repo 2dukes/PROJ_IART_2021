@@ -23,11 +23,21 @@ class Game {
         this.boardsSel.addEventListener("change", this.changeBoard.bind(this));
         
         this.boards = this.getBoards();
+        
         this.board = new Board(this, this.boards[this.boardsSel.value].board);
+
+        if (this.boardsSel.value == "random") // random
+            this.board.buildRandomBoard();
+        else 
+            this.board.setBoard(this.boards[this.boardsSel.value].board);
 
         this.modesSel = document.getElementById("mode_sel");
         this.modesSel.addEventListener("change", this.changeMode.bind(this));
         this.mode = this.modesSel.value;
+
+        this.algSel = document.getElementById("algorithm_sel");
+        this.algSel.addEventListener("change", this.changeAlgorithm.bind(this));
+        this.algorithm = this.algSel.value;
 
 		this.searchTree = new SearchTree();
 
@@ -57,7 +67,7 @@ class Game {
             this.running = true;
             try {
                 console.log(this.board.board);
-                this.solution = this.runSearch("greedy", this.board);
+                this.solution = this.runSearch(this.algorithm, this.board);
                 // this.drawSolutionAnimation(this.solution);
                 this.drawSolution();
             } catch (err) {
@@ -66,6 +76,7 @@ class Game {
             this.running = false;
 
         } else if(this.mode == HUMAN) {
+            this.board.setDrawSolution(false);
             this.board.clearBoard();
             this.board.drawBoard();
             this.state = FIRST_CELL;
@@ -78,8 +89,12 @@ class Game {
     reset() {
         console.log("Resetting");
         this.boards = this.getBoards();
-        this.board.setBoard(this.boards[this.boardsSel.value].board);
-        // this.board.initBoard();
+
+        if (this.boardsSel.value == "random") // random
+            this.board.buildRandomBoard();
+        else 
+            this.board.setBoard(this.boards[this.boardsSel.value].board);
+                
         this.state = MENU;
         this.solution = null;
         this.hints = false;
@@ -195,7 +210,10 @@ class Game {
 
     changeBoard() {
         if(!this.running) {
-            this.board.setBoard(this.boards[this.boardsSel.value].board);
+            if (this.boardsSel.value == "random") // random
+                this.board.buildRandomBoard();
+            else 
+                this.board.setBoard(this.boards[this.boardsSel.value].board);
             console.log(this.board.board);
         }
     }

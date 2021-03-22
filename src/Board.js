@@ -81,7 +81,7 @@ class Board {
 
 	buildRandomBoard() {
 		this.board = [];
-		for (let i = 0; i < 9; ++i) {
+		for (let i = 0; i < 3; ++i) {
 			let aux = [];
 			for (let j = 0; j < 9; ++j) {
 				aux.push(Math.floor(Math.random() * Math.floor(9))+1);
