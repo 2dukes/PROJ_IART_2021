@@ -34,10 +34,14 @@ class Game {
         this.modesSel = document.getElementById("mode_sel");
         this.modesSel.addEventListener("change", this.changeMode.bind(this));
         this.mode = this.modesSel.value;
-
+        
         this.algSel = document.getElementById("algorithm_sel");
         this.algSel.addEventListener("change", this.changeAlgorithm.bind(this));
         this.algorithm = this.algSel.value;
+
+        this.heuSel = document.getElementById("heuristic_sel");
+        this.heuSel.addEventListener("change", this.changeHeuristic.bind(this));
+        this.heuristic = this.algSel.value;
 
 		this.searchTree = new SearchTree();
 
@@ -103,7 +107,7 @@ class Game {
 
     runSearch(method) {
         let t0 = performance.now();
-        let solution = this.searchTree.run(method, this.board.board);
+        let solution = this.searchTree.run(method, this.board.board, this.heuristic);
 		let t1 = performance.now();
 		console.log("Call to function took " + (t1 - t0) + " milliseconds.");
         return solution;
@@ -219,13 +223,47 @@ class Game {
 
     changeAlgorithm() {
         if(!this.running) {
+            this.changeHeuristic();
             this.algorithm = this.algSel.value;
         }
     }
 
     changeMode() {
         if(this.state == MENU) {
+            this.changeHeuristic();
             this.mode = this.modesSel.value;
+        }
+    }
+
+    changeHeuristic() {
+        if (!this.running) {
+            let gameMode = document.querySelector("div.choose-game-mode");
+            let searchAlgorithm = document.querySelector("div.choose-algorithm");
+            let heuristicFunc = document.querySelector("div.choose-heuristic");
+
+            if(this.modesSel.value == 1) {
+                searchAlgorithm.classList.remove("d-none");
+                if(this.algSel.value == "greedy" || this.algSel.value == "a_star") {
+                    gameMode.classList.remove("col-6");
+                    gameMode.classList.add("col-4");
+                    searchAlgorithm.classList.remove("col-6");
+                    searchAlgorithm.classList.add("col-4");
+                    heuristicFunc.classList.remove("d-none");
+                } else {
+                    heuristicFunc.classList.add("d-none");
+                    searchAlgorithm.classList.remove("col-4");
+                    searchAlgorithm.classList.add("col-6");
+                    gameMode.classList.add("col-6");
+                }
+            }
+            else {
+                gameMode.classList.remove("col-4");
+                gameMode.classList.remove("col-6");
+
+                searchAlgorithm.classList.add("d-none");        
+                heuristicFunc.classList.add("d-none");
+            }
+            this.heuristic = this.heuSel.value;
         }
     }
 

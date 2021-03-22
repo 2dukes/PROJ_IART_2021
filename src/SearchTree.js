@@ -2,22 +2,22 @@ class SearchTree {
     constructor() {
     }
 
-    run(method, board) {
+    run(method, board, heuristic) {
         switch(method) {
             case "dfs":
-                this.result = this.dfs(new Node(null, null, 0, board, 0), null);
+                this.result = this.dfs(new Node(null, null, 0, board, 0, heuristic), null);
                 break;
             case "bfs":
-                this.result = this.bfs(new Node(null, null, 0, board, 0));
+                this.result = this.bfs(new Node(null, null, 0, board, 0, heuristic));
                 break;
             case "iterative":
-                this.result = this.iterativeDeepening(new Node(null, null, 0, board, 0));
+                this.result = this.iterativeDeepening(new Node(null, null, 0, board, 0, heuristic));
                 break;
             case "greedy":
-                this.result = this.greedy(new Node(null, null, 0, board, 0));
+                this.result = this.greedy(new Node(null, null, 0, board, 0, heuristic));
                 break;
             case "a_star":
-                this.result = this.a_star(new Node(null, null, 0, board, 0));
+                this.result = this.a_star(new Node(null, null, 0, board, 0, heuristic));
                 break;  
         }
         return this.buildSolution(this.result);

@@ -31,7 +31,7 @@
 
     <div id="menu" class="col-8 offset-2">
         <div class="row">
-            <div class="container choose-game-mode my-4 col-6">
+            <div class="container choose-game-mode my-4">
                 <h3>Game mode:</h3>
                 <select class="form-select" id="mode_sel" aria-label="Default select example">
                     <option selected value="0">Human</option>
@@ -39,9 +39,7 @@
                 </select>
             </div>
 
-            
-
-            <div class="container choose-algorithm my-4 col-6">
+            <div class="container choose-algorithm my-4 col-6 d-none">
                 <h3>Algorithm:</h3>
                 <select class="form-select" id="algorithm_sel" aria-label="Default select example">
                     <option selected value="greedy">Greedy</option>
@@ -49,6 +47,15 @@
                     <option value="dfs">Depth First Search</option>
                     <option value="iterative">Iterative Deepening</option>
                     <option value="bfs">Breadth First Search</option>
+                </select>
+            </div>
+
+            <div class="container choose-heuristic my-4 col-4 d-none">
+                <h3>Heuristic:</h3>
+                <select class="form-select" id="heuristic_sel" aria-label="Default select example">
+                    <option selected value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
                 </select>
             </div>
         </div>

@@ -4,7 +4,7 @@ const MAX_DEPTH = 1000;
 let totalDeals = 0;
 
 class Node {
-    constructor(move, parent, currentDepth, board, usedDeals) {
+    constructor(move, parent, currentDepth, board, usedDeals, usedHeuristic) {
         // this.id = id;
         this.move = move;
         this.parent = parent;
@@ -16,7 +16,23 @@ class Node {
         this.usedDeals = usedDeals;
 
         this.validMoves = getValidMoves(this.board);
-        this.heuristic = this.evaluateMove();
+
+        switch(usedHeuristic) {
+            case "1":
+                this.heuristic = this.evaluateMove();
+                break;
+            case "2":
+                this.heuristic = this.evaluateMove2();
+                break;
+            case "3":
+                this.heuristic = this.evaluateMove3();
+                break;
+            default:
+                console.log("Invalid heuristic!");
+        }
+
+        this.usedHeuristic = usedHeuristic;
+
         // console.log(this.heuristic);
         
         //if(isHeuristic) 
@@ -49,12 +65,12 @@ class Node {
             for (let j = 0; j < this.board.length; ++j)
                 newBoard[j] = this.board[j].slice();
             
-            let newNode = new Node(this.validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, this.validMoves[i]),this.usedDeals);
+            let newNode = new Node(this.validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, this.validMoves[i]),this.usedDeals, this.usedHeuristic);
             children.push(newNode);
         }
 
         let boardDealNode = deal(this.board);
-        children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
+        children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1, this.usedHeuristic));
 
         return children;
     }
@@ -156,9 +172,11 @@ class Node {
         let board = this.cloneBoard();
         let numberOfMoves = getValidMoves(board).length;
 
-        let currentCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;        
+        let currentCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;  
 
         
+
+
 
         return currentCells/2 + numberOfMoves;
     }
@@ -206,34 +224,6 @@ class Node {
                     return true;    
             }
         return false;
-    }
-
-    getBestMove(moves) {
-        //let bestMove;
-        let maxNumMoves = Number.MIN_VALUE;
-
-        let numMoves;
-        for (let i = 0; i < moves.length; ++i) {
-
-            let newBoard0 = [];
-
-            // Clone board
-            for (let j = 0; j < this.board.length; ++j)
-                newBoard0[j] = this.board[j].slice();
-
-            let newBoard = applyMove(newBoard0, moves[i]);
-
-            numMoves = getValidMoves(newBoard).length;
-
-            if (numMoves > maxNumMoves) {
-                maxNumMoves = numMoves;
-                //bestMove = moves[i];
-            }
-        }
-
-        return maxNumMoves;
-
-        //return bestMove;
     }
 
 }
