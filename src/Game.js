@@ -218,6 +218,12 @@ class Game {
         }
     }
 
+    changeAlgorithm() {
+        if(!this.running) {
+            
+        }
+    }
+
     changeMode() {
         if(this.state == MENU) {
             this.mode = this.modesSel.value;
