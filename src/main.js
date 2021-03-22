@@ -51,13 +51,13 @@ function getUrlVars() {
 }
 //Include additional files here
 serialInclude([
-	"./src/Move.js",
-    "./src/Position.js",
-	"./src/Board.js",
-	"./src/Node.js",
-	"./src/Game.js",
-	"./src/SearchTree.js",
-	"./src/PriorityQueue.js",
+	"Move.js",
+    "Position.js",
+	"Board.js",
+	"Node.js",
+	"Game.js",
+	"SearchTree.js",
+	"PriorityQueue.js",
 
 	(main = function () {
 		

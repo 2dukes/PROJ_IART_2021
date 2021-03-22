@@ -69,22 +69,25 @@ class Node {
     }
 
     hintsEvaluate(auxBoard) {
-        let numberOfMoves = 0;
         let validMove = getFirstValidMove(auxBoard);
 
         while(validMove != null) {
-            numberOfMoves++;
             applyMove(auxBoard, validMove); // Already modifies original auxBoard
             validMove = getFirstValidMove(auxBoard);
         }
 
-        if(this.boardEmpty(auxBoard)) 
-            numberOfMoves = 0;
+        if(this.boardEmpty(auxBoard)) {
+            return {
+                // "notEmptyCell": this.countNotEmpty(auxBoard),
+                "finalBoard": auxBoard,
+                "numberOfMoves": 0
+            };
+        }
 
         return {
             // "notEmptyCell": this.countNotEmpty(auxBoard),
             "finalBoard": auxBoard,
-            "numberOfMoves": numberOfMoves + this.countNotEmpty(auxBoard) / 2
+            "numberOfMoves": this.countNotEmpty(auxBoard) / 2
         };
     }
 
@@ -117,7 +120,7 @@ class Node {
         if(this.boardEmpty(hints_st2_2.finalBoard))
             nH_2 = 0;
         else
-            nH_2 = hints_st2_1.numberOfMoves + 1 + hints_st2_2.numberOfMoves;
+            nH_2 = hints_st2_2.numberOfMoves;
 
         // Deal + Hints
         let st3CB = this.cloneBoard();

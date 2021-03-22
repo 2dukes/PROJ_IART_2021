@@ -33,9 +33,8 @@ class SearchTree {
     }
 
     greedy(root) {
-        
         let visitedBoards = [];
-        
+        // let count = 0;
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
 
@@ -43,8 +42,16 @@ class SearchTree {
         let timeout = 20000;
 
         while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
-
             let newNode = queue.dequeue().element;
+
+            // count++;
+            // console.log("---------------------------------- QUEUE -------------------------------");
+            // console.log(queue.items);
+            // console.log("SELECTED NODE: ");
+            // console.log(newNode);
+            // if(count == 20) {
+            //     break;
+            // }
 
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
