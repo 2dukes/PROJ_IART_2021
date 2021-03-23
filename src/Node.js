@@ -174,10 +174,6 @@ class Node {
 
         let currentCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;  
 
-        
-
-
-
         return currentCells/2 + numberOfMoves;
     }
 

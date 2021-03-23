@@ -52,12 +52,14 @@ class Game {
         this.startButton = document.getElementById("start_button");
         this.startButton.addEventListener("click", this.run.bind(this));
 
+        this.startSpin = document.getElementById("run_spinner");
+
         this.backMenuButton = document.getElementById("backMenu");
         this.backMenuButton.addEventListener("click", this.switchToMenu.bind(this));
 
     }
 
-    run() {
+    async run() {
         if(this.running)
             return;
         // this.board.initBoard(this.currentBoard);
@@ -68,14 +70,21 @@ class Game {
 
         if(this.mode == COMPUTER) {
             this.running = true;
+            this.startSpin.classList.remove("d-none");
+            await new Promise(r => setTimeout(r, 1));
+            console.log(this.startSpin.classList);
+            console.log(this.startSpin);
             try {
                 console.log(this.board.board);
                 this.solution = this.runSearch(this.algorithm, this.board);
                 // this.drawSolutionAnimation(this.solution);
-                this.drawSolution();
+                this.setSolution();
             } catch (err) {
                 console.log(err.toString());
+                this.board.setDrawSolution(false);
+                this.board.drawBoard();
             }
+            this.startSpin.classList.add("d-none");
             this.running = false;
 
         } else if(this.mode == HUMAN) {
@@ -182,7 +191,7 @@ class Game {
         this.state = END;
     }
 
-    drawSolution() {
+    setSolution() {
         this.board.setDrawSolution(true);
         this.state = VIEW_SOL;
         this.currentMoveView = 0;

@@ -20,7 +20,10 @@ class SearchTree {
                 this.result = this.a_star(new Node(null, null, 0, board, 0, heuristic));
                 break;  
         }
-        return this.buildSolution(this.result);
+        if(this.result == -1) 
+            throw "No solution found within 20s";
+        else
+            return this.buildSolution(this.result);
     }
 
     buildSolution(node) {
@@ -34,7 +37,7 @@ class SearchTree {
 
     greedy(root) {
         
-        let visitedBoards = [];
+        // let visitedBoards = [];
         
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
@@ -46,10 +49,10 @@ class SearchTree {
 
             let newNode = queue.dequeue().element;
 
-            if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
-                console.log("Already visited");
-                continue;
-            }
+            // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
+            //     console.log("Already visited");
+            //     continue;
+            // }
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
@@ -57,7 +60,7 @@ class SearchTree {
                 return newNode;
             }
 
-            visitedBoards.push(newNode.board.toString());
+            // visitedBoards.push(newNode.board.toString());
             
             let children = newNode.expand();
 
