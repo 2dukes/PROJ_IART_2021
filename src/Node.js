@@ -27,6 +27,9 @@ class Node {
             case "3":
                 this.heuristic = this.evaluateMove3();
                 break;
+            case "4":
+                this.heuristic = this.evaluateMove4();
+                break;
             default:
                 console.log("Invalid heuristic!");
         }
@@ -201,6 +204,71 @@ class Node {
             return -this.currentDepth; // Because we want him to select the one with higher depth when it finds a solution
         return minHeuristic;
     }
+
+    evaluateMove4() {
+        let board = this.cloneBoard();
+        let validMoves = getValidMoves(board)
+        let numberOfMoves = validMoves.length;
+
+        // let remainingCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;  
+
+        let remainingBoard = applyMoves(this.cloneBoard(), validMoves);
+        let remainingValues = getRemainingCells(remainingBoard);
+
+        let result = 0;
+        let willDeal = false;
+
+        let removedDuplicates = [...new Set(remainingValues)];
+        let rest = remainingValues.length.length - removedDuplicates.length;
+        if(rest != removedDuplicates.length) { //n deu match igual de todos os restantes
+            let ocur = countOccurrences(remainingValues);
+            if(ocur[1] != ocur[9]) {
+                if(ocur[1] > 0 && ocur[9] > 0) {
+                    if(ocur[1] % 2 != 0 || ocur[9] % 2 != 0) {
+                        result += 1;
+                        willDeal = true;
+                    }
+                }
+            }
+            if(ocur[2] != ocur[8]) {
+                if(ocur[2] > 0 && ocur[8] > 0) {
+                    if(ocur[2] % 2 != 0 || ocur[8] % 2 != 0) {
+                        result += 1;
+                        willDeal = true;
+                    }
+                }
+            }
+            if(ocur[3] != ocur[7]) {
+                if(ocur[3] > 0 && ocur[7] > 0) {
+                    if(ocur[3] % 2 != 0 || ocur[7] % 2 != 0) {
+                        result += 1;
+                        willDeal = true;
+                    }
+                }
+            }
+            if(ocur[4] != ocur[6]) {
+                if(ocur[4] > 0 && ocur[6] > 0) {
+                    if(ocur[4] % 2 != 0 || ocur[6] % 2 != 0) {
+                        result += 1;
+                        willDeal = true;
+                    }
+                }
+            }
+            if(ocur[5] % 2 != 0) {
+                result += 1;
+            }
+        } else {
+
+        }
+
+        if(remainingValues.length % 2 != 0) {
+            result += Math.floor(remainingValues.length/2) + (willDeal ? 1 : 2);
+        } else {
+            result += remainingValues.length/2 + numberOfMoves;
+        }
+
+        return result;
+    }
     
     countEmpty(board) {
         let count = 0;
@@ -329,6 +397,14 @@ function applyMove(board, move) {
     return board;
 }
 
+function applyMoves(board, moves) {
+    for(let i = 0; i < moves.length; ++i) {
+        board = applyMove(board, moves[i]);
+    }
+
+    return board;
+}
+
 function checkEqualBoards(board1, board2) {
     if (board1 === board2) return true;
     if (board1 == null || board2 == null) return false;
@@ -382,3 +458,27 @@ function deal(board0) { // duplicada
     return board;
 }
 
+function getRemainingCells(board) {
+
+    let remaining = [];
+
+    for(let y = 0; y < board.length; ++y) {
+        for(let x = 0; x < board[0].length; ++x) {
+            if(board[y][x] != 0) {
+                remaining.push(board[y][x]);
+            }
+        }
+    }
+
+    return remaining;
+}
+
+function countOccurrences(values) {
+    let ocur = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0};
+
+    for(let i = 0; i < values.length; ++i) {
+        ocur[values[i]]++;
+    }
+
+    return ocur;
+}
