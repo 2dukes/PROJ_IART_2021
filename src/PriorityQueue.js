@@ -45,7 +45,13 @@ class PriorityQueue {
                 this.items.splice(i, 0, qElement); 
                 contain = true; 
                 break; 
-            } 
+            } else if(this.items[i].priority == qElement.priority) { //BETWEEN THE ELEMENTS WITH SAME PRIORITY, THOSE WITH GREATEST DEPTH COME FIRST
+                if(qElement.element.currentDepth > this.items[i].element.currentDepth) {
+                    this.items.splice(i, 0, qElement); 
+                    contain = true; 
+                    break; 
+                }
+            }
         } 
 
         // if the element have the highest priority 

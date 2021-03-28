@@ -15,7 +15,7 @@ class Node {
 
         this.usedDeals = usedDeals;
 
-        this.validMoves = getValidMoves(this.board);
+        // this.validMoves = getValidMoves(this.board);
 
         switch(usedHeuristic) {
             case "1":
@@ -61,19 +61,23 @@ class Node {
         // let boardDealNode = deal(this.board);
         // children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
 
-        for(let i = 0; i < this.validMoves.length; ++i) {
+        let validMoves = getValidMoves(this.board);
+
+        for(let i = 0; i < validMoves.length; ++i) {
             let newBoard = [];
 
             // Clone board
             for (let j = 0; j < this.board.length; ++j)
                 newBoard[j] = this.board[j].slice();
             
-            let newNode = new Node(this.validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, this.validMoves[i]),this.usedDeals, this.usedHeuristic);
+            let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]),this.usedDeals, this.usedHeuristic);
             children.push(newNode);
         }
 
         let boardDealNode = deal(this.board);
         children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1, this.usedHeuristic));
+
+        
 
         return children;
     }
@@ -205,69 +209,128 @@ class Node {
         return minHeuristic;
     }
 
+    // evaluateMove4() {
+    //     let board = this.cloneBoard();
+    //     let validMoves = getValidMoves(board)
+    //     let numberOfMoves = validMoves.length;
+
+    //     // let remainingCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;  
+
+    //     let remainingBoard = applyMoves(this.cloneBoard(), validMoves);
+    //     let remainingValues = getRemainingCells(remainingBoard);
+
+    //     let result = 0;
+    //     let willDeal = false;
+
+    //     let removedDuplicates = [...new Set(remainingValues)];
+    //     let rest = remainingValues.length.length - removedDuplicates.length;
+    //     if(rest != removedDuplicates.length) { //n deu match igual de todos os restantes
+    //         let ocur = countOccurrences(remainingValues);
+    //         if(ocur[1] != ocur[9]) {
+    //             if(ocur[1] > 0 && ocur[9] > 0) {
+    //                 if(ocur[1] % 2 != 0 || ocur[9] % 2 != 0) {
+    //                     result += 1;
+    //                     willDeal = true;
+    //                 }
+    //             }
+    //         }
+    //         if(ocur[2] != ocur[8]) {
+    //             if(ocur[2] > 0 && ocur[8] > 0) {
+    //                 if(ocur[2] % 2 != 0 || ocur[8] % 2 != 0) {
+    //                     result += 1;
+    //                     willDeal = true;
+    //                 }
+    //             }
+    //         }
+    //         if(ocur[3] != ocur[7]) {
+    //             if(ocur[3] > 0 && ocur[7] > 0) {
+    //                 if(ocur[3] % 2 != 0 || ocur[7] % 2 != 0) {
+    //                     result += 1;
+    //                     willDeal = true;
+    //                 }
+    //             }
+    //         }
+    //         if(ocur[4] != ocur[6]) {
+    //             if(ocur[4] > 0 && ocur[6] > 0) {
+    //                 if(ocur[4] % 2 != 0 || ocur[6] % 2 != 0) {
+    //                     result += 1;
+    //                     willDeal = true;
+    //                 }
+    //             }
+    //         }
+    //         if(ocur[5] % 2 != 0) {
+    //             result += 1;
+    //             // willDeal = true;
+    //         }
+    //     } else {
+
+    //     }
+
+    //     if(remainingValues.length % 2 != 0) {
+    //         result += Math.floor(remainingValues.length/2) + (willDeal ? 2 : 1);
+    //     } else {
+    //         result += remainingValues.length/2 + numberOfMoves;
+    //     }
+    //     // console.log(result, this.move);
+    //     return result;
+    // }
+
     evaluateMove4() {
         let board = this.cloneBoard();
-        let validMoves = getValidMoves(board)
-        let numberOfMoves = validMoves.length;
-
-        // let remainingCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;  
-
-        let remainingBoard = applyMoves(this.cloneBoard(), validMoves);
-        let remainingValues = getRemainingCells(remainingBoard);
-
+        let cellValues = getRemainingCells(board);
+        let ocur = countOccurrences(cellValues);
         let result = 0;
+        let combs = [[1,9], [2,8], [3,7], [4,6]];
         let willDeal = false;
 
-        let removedDuplicates = [...new Set(remainingValues)];
-        let rest = remainingValues.length.length - removedDuplicates.length;
-        if(rest != removedDuplicates.length) { //n deu match igual de todos os restantes
-            let ocur = countOccurrences(remainingValues);
-            if(ocur[1] != ocur[9]) {
-                if(ocur[1] > 0 && ocur[9] > 0) {
-                    if(ocur[1] % 2 != 0 || ocur[9] % 2 != 0) {
+        for(let i = 0; i < combs.length; ++i) { 
+            if(Math.min([ocur[combs[i][0]], ocur[combs[i][1]]]) == ocur[combs[i][0]]) {
+                let dif = ocur[combs[i][1]] - ocur[combs[i][0]];
+                if(dif > 0) {
+                    result += Math.floor(dif/2);
+                    if(dif % 2 != 0) {
                         result += 1;
                         willDeal = true;
                     }
                 }
-            }
-            if(ocur[2] != ocur[8]) {
-                if(ocur[2] > 0 && ocur[8] > 0) {
-                    if(ocur[2] % 2 != 0 || ocur[8] % 2 != 0) {
+                result += ocur[combs[i][0]];
+            } else {
+                let dif = ocur[combs[i][0]] - ocur[combs[i][1]];
+                if(dif > 0) {
+                    result += Math.floor(dif/2);
+                    if(dif % 2 != 0) {
                         result += 1;
                         willDeal = true;
                     }
                 }
+                result += ocur[combs[i][1]];
             }
-            if(ocur[3] != ocur[7]) {
-                if(ocur[3] > 0 && ocur[7] > 0) {
-                    if(ocur[3] % 2 != 0 || ocur[7] % 2 != 0) {
-                        result += 1;
-                        willDeal = true;
-                    }
-                }
-            }
-            if(ocur[4] != ocur[6]) {
-                if(ocur[4] > 0 && ocur[6] > 0) {
-                    if(ocur[4] % 2 != 0 || ocur[6] % 2 != 0) {
-                        result += 1;
-                        willDeal = true;
-                    }
-                }
-            }
-            if(ocur[5] % 2 != 0) {
-                result += 1;
-            }
-        } else {
-
         }
-
-        if(remainingValues.length % 2 != 0) {
-            result += Math.floor(remainingValues.length/2) + (willDeal ? 1 : 2);
-        } else {
-            result += remainingValues.length/2 + numberOfMoves;
+        if(ocur[5] % 2 != 0) {
+            result += Math.floor(ocur[5]/2) + 1;
+            willDeal = true;
         }
-
+        result += willDeal ? 1 : 0;
+        // console.log(result, this.move)
         return result;
+
+        // if(Math.min([ocur[1], ocur[9]]) == ocur[1]) {
+        //     let dif = ocur[9] - ocur[1];
+        //     if(dif > 0) {
+        //         if(dif % 2 != 0) {
+        //             result += Math.floor(dif/2) + 1;
+        //         }
+        //     }
+        //     result += ocur[1];
+        // } else {
+        //     let dif = ocur[1] - ocur[9];
+        //     if(dif > 0) {
+        //         if(dif % 2 != 0) {
+        //             result += Math.floor(dif/2) + 1;
+        //         }
+        //     }
+        //     result += ocur[9];
+        // }
     }
     
     countEmpty(board) {
