@@ -37,39 +37,28 @@ class SearchTree {
 
     greedy(root) {
         
-        // let visitedBoards = [];
-        
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
 
         let t0 = performance.now();
         let timeout = 20000;
 
-        while(queue.items.length > 0 ){
-            //&& (performance.now() - t0) < timeout) {
+        while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
 
             let newNode = queue.dequeue().element;
             
-            // console.log(newNode.heuristic)
-            // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
-            //     console.log("Already visited");
-            //     continue;
-            // }
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
 
                 return newNode;
             }
-
-            // visitedBoards.push(newNode.board.toString());
             
             let children = newNode.expand();
 
             for (let i = 0; i < children.length; ++i) {
                 queue.enqueue(children[i], children[i].heuristic);
             }
-                
         }
         throw "Solution not Found!";
     }
@@ -82,8 +71,7 @@ class SearchTree {
         let t0 = performance.now();
         let timeout = 20000;
 
-        while(queue.items.length > 0 ){
-            //&& (performance.now() - t0) < timeout) {
+        while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
 
             let newNode = queue.dequeue().element;
             console.log(newNode.heuristic, newNode.currentDepth);

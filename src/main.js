@@ -60,9 +60,6 @@ serialInclude([
 	"./src/PriorityQueue.js",
 
 	(main = function () {
-		
 		let game = new Game();
-
-		// game.run();
 	}),
 ]);
