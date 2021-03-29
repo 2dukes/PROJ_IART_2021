@@ -74,6 +74,7 @@ class Game {
                 this.solution = this.runSearch(this.algorithm, this.board);
                 this.setSolution();
             } catch (err) {
+                console.log(err.toString());
                 this.board.setDrawSolution(false);
                 this.board.drawBoard();
             }

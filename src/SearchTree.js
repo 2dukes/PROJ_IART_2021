@@ -60,7 +60,8 @@ class SearchTree {
                 queue.enqueue(children[i], children[i].heuristic);
             }
         }
-        throw "Solution not Found!";
+        
+        return -1;
     }
 
     a_star(root) {
@@ -86,6 +87,8 @@ class SearchTree {
             for (let i = 0; i < children.length; ++i)
                 queue.enqueue(children[i], children[i].heuristic + children[i].currentDepth);
         }
+
+        return -1;
     }
 
     chooseBestChild(nodes) {
@@ -108,6 +111,8 @@ class SearchTree {
             result = this.dfs(root, depth);
             depth++;
         }
+        if((performance.now() - t0) >= timeout)
+            throw "Solution not Found!";
 
         return result;
     }
@@ -174,6 +179,7 @@ class SearchTree {
                     queue.enqueue(children[i], children[i].heuristic);
             }
         }
+
         return -1;
     }
 
@@ -222,7 +228,7 @@ class SearchTree {
             queue.push(...children);
         }
 
-        console.log('Could not find a solution');
+        return -1;
     }
 
     checkAlreadyVisited(visitedBoards, board) {
