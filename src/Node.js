@@ -1,11 +1,9 @@
-const MAX_DEALS = 1;
 const MAX_DEPTH = 1000;
 
 let totalDeals = 0;
 
 class Node {
     constructor(move, parent, currentDepth, board, usedDeals, usedHeuristic) {
-        // this.id = id;
         this.move = move;
         this.parent = parent;
         this.currentDepth = currentDepth;
@@ -14,8 +12,6 @@ class Node {
         this.reachedFinalState = checkFinalState(this.board);
 
         this.usedDeals = usedDeals;
-
-        this.validMoves = getValidMoves(this.board);
 
         switch(usedHeuristic) {
             case "1":
@@ -27,20 +23,18 @@ class Node {
             case "3":
                 this.heuristic = this.evaluateMove3();
                 break;
+            case "4":
+                this.heuristic = this.evaluateMove4();
+                break;
             default:
                 console.log("Invalid heuristic!");
         }
 
         this.usedHeuristic = usedHeuristic;
-
-        // console.log(this.heuristic);
-        
-        //if(isHeuristic) 
             
     }
 
     expand() {
-        // console.log("Node depth: " + this.currentDepth);
         if (this.currentDepth > MAX_DEPTH) {
             console.log("Max Depth exceeded!");
             return [];
@@ -48,24 +42,16 @@ class Node {
 
         let children = [];
 
-        // if (totalDeals < MAX_DEALS /* || this.validMoves.length == 0 */) {
-        //     console.log("Using deal...");
-        // let boardDealNode = deal(this.board);
-        // totalDeals++;
-        // children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
-        // } 
+        let validMoves = getValidMoves(this.board);
 
-        // let boardDealNode = deal(this.board);
-        // children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1));
-
-        for(let i = 0; i < this.validMoves.length; ++i) {
+        for(let i = 0; i < validMoves.length; ++i) {
             let newBoard = [];
 
             // Clone board
             for (let j = 0; j < this.board.length; ++j)
                 newBoard[j] = this.board[j].slice();
             
-            let newNode = new Node(this.validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, this.validMoves[i]),this.usedDeals, this.usedHeuristic);
+            let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]),this.usedDeals, this.usedHeuristic);
             children.push(newNode);
         }
 
@@ -98,7 +84,6 @@ class Node {
             numberOfMoves = 0;
 
         return {
-            // "notEmptyCell": this.countNotEmpty(auxBoard),
             "finalBoard": auxBoard,
             "numberOfMoves": numberOfMoves + this.countNotEmpty(auxBoard) / 2
         };
@@ -114,14 +99,12 @@ class Node {
 
         if(this.boardEmpty(auxBoard)) {
             return {
-                // "notEmptyCell": this.countNotEmpty(auxBoard),
                 "finalBoard": auxBoard,
                 "numberOfMoves": 0
             };
         }
 
         return {
-            // "notEmptyCell": this.countNotEmpty(auxBoard),
             "finalBoard": auxBoard,
             "numberOfMoves": this.countNotEmpty(auxBoard) / 2
         };
@@ -201,6 +184,50 @@ class Node {
             return -this.currentDepth; // Because we want him to select the one with higher depth when it finds a solution
         return minHeuristic;
     }
+
+
+    evaluateMove4() {
+        let board = this.cloneBoard();
+        let cellValues = getRemainingCells(board);
+        let ocur = countOccurrences(cellValues);
+        this.ocur = ocur;
+        let result = 0;
+        let combs = [[1,9], [2,8], [3,7], [4,6]];
+        let willDeal = false;
+
+        for(let i = 0; i < combs.length; ++i) { 
+            if(Math.min(ocur[combs[i][0]], ocur[combs[i][1]]) == ocur[combs[i][0]]) {
+                
+                let dif = ocur[combs[i][1]] - ocur[combs[i][0]];
+                if(dif > 0) {
+                    result += Math.floor(dif/2);
+                    if(dif % 2 != 0) {
+                        result += 1;
+                        willDeal = true;
+                    }
+                }
+                result += ocur[combs[i][0]];
+            } else {
+                let dif = ocur[combs[i][0]] - ocur[combs[i][1]];
+                if(dif > 0) {
+                    result += Math.floor(dif/2);
+                    if(dif % 2 != 0) {
+                        result += 1;
+                        willDeal = true;
+                    }
+                }
+                result += ocur[combs[i][1]];
+            }
+            
+        }
+        if(ocur[5] % 2 != 0) {
+            result += Math.floor(ocur[5]/2) + 1;
+            willDeal = true;
+        }
+        result += willDeal ? 1 : 0;
+        
+        return result;
+    }
     
     countEmpty(board) {
         let count = 0;
@@ -214,8 +241,6 @@ class Node {
     checkExistsVerticalMatchesOrSumTenPairs(moves) {
         for (let i = 0; i < moves.length; ++i)
             if (moves[i] != null) {
-                // console.log(this.parent.board);
-                // console.log(moves[i]);
                 if((moves[i].startNumber + moves[i].endNumber == 10) || moves[i].p1.x == moves[i].p2.x) 
                     return true;    
             }
@@ -313,18 +338,24 @@ function getValidMovesCell(board, x, y) {
     return moves;
 }
 
-// [[1,2,3,4,5,6,7,8,9],
-// [1,1,1,2,1,3,1,4,1],
-// [5,1,6,1,7,1,8,1,9]]
-
 function applyMove(board, move) {
     let x1 = move.p1.x;
     let y1 = move.p1.y;
     let x2 = move.p2.x;
     let y2 = move.p2.y;
 
-    board[y1][x1] = 0;
-    board[y2][x2] = 0;
+    if(board[y1][x1] != 0 && board[y2][x2] != 0) {
+        board[y1][x1] = 0;
+        board[y2][x2] = 0;
+    }
+
+    return board;
+}
+
+function applyMoves(board, moves) {
+    for(let i = 0; i < moves.length; ++i) {
+        board = applyMove(board, moves[i]);
+    }
 
     return board;
 }
@@ -382,3 +413,27 @@ function deal(board0) { // duplicada
     return board;
 }
 
+function getRemainingCells(board) {
+
+    let remaining = [];
+
+    for(let y = 0; y < board.length; ++y) {
+        for(let x = 0; x < board[0].length; ++x) {
+            if(board[y][x] != 0) {
+                remaining.push(board[y][x]);
+            }
+        }
+    }
+
+    return remaining;
+}
+
+function countOccurrences(values) {
+    let ocur = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0};
+
+    for(let i = 0; i < values.length; ++i) {
+        ocur[values[i]]++;
+    }
+
+    return ocur;
+}

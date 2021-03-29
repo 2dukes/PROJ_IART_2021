@@ -5,7 +5,7 @@ class SearchTree {
     run(method, board, heuristic) {
         switch(method) {
             case "dfs":
-                this.result = this.dfs(new Node(null, null, 0, board, 0, heuristic), null);
+                this.result = this.dfsWithPriority(new Node(null, null, 0, board, 0, heuristic), null);
                 break;
             case "bfs":
                 this.result = this.bfs(new Node(null, null, 0, board, 0, heuristic));
@@ -37,8 +37,6 @@ class SearchTree {
 
     greedy(root) {
         
-        // let visitedBoards = [];
-        
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
 
@@ -48,26 +46,19 @@ class SearchTree {
         while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
 
             let newNode = queue.dequeue().element;
-
-            // if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
-            //     console.log("Already visited");
-            //     continue;
-            // }
+            
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
 
                 return newNode;
             }
-
-            // visitedBoards.push(newNode.board.toString());
             
             let children = newNode.expand();
 
             for (let i = 0; i < children.length; ++i) {
                 queue.enqueue(children[i], children[i].heuristic);
             }
-                
         }
         throw "Solution not Found!";
     }
@@ -83,6 +74,7 @@ class SearchTree {
         while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
 
             let newNode = queue.dequeue().element;
+            console.log(newNode.heuristic, newNode.currentDepth);
 
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");

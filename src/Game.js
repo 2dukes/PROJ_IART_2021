@@ -62,25 +62,16 @@ class Game {
     async run() {
         if(this.running)
             return;
-        // this.board.initBoard(this.currentBoard);
-        // this.reset();
-
-        // this.board.setBoard(this.boards[this.boardsSel.value].board);
-        // this.board.initBoard();
 
         if(this.mode == COMPUTER) {
             this.running = true;
             this.startSpin.classList.remove("d-none");
             await new Promise(r => setTimeout(r, 1));
-            console.log(this.startSpin.classList);
-            console.log(this.startSpin);
             try {
                 console.log(this.board.board);
                 this.solution = this.runSearch(this.algorithm, this.board);
-                // this.drawSolutionAnimation(this.solution);
                 this.setSolution();
             } catch (err) {
-                console.log(err.toString());
                 this.board.setDrawSolution(false);
                 this.board.drawBoard();
             }
@@ -99,7 +90,6 @@ class Game {
     }
 
     reset() {
-        console.log("Resetting");
         this.boards = this.getBoards();
 
         if (this.boardsSel.value == "random") // random
@@ -200,7 +190,6 @@ class Game {
 
     solutionBack() {
         if(this.currentMoveView > 0 && this.state == VIEW_SOL) {
-            console.log("back");
             this.currentMoveView--;
             this.updateBoardSolution();
         }
@@ -208,7 +197,6 @@ class Game {
 
     solutionForward() {
         if(this.currentMoveView < this.solution.length - 1 && this.state == VIEW_SOL) {
-            console.log("forward");
             this.currentMoveView++;
             this.updateBoardSolution();
         }
