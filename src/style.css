@@ -33,6 +33,10 @@ table.table tbody td.selected {
     background-color:#666666 !important;
 }
 
+.spinner-border {
+    vertical-align: baseline;
+}
+
 @media (max-width: 991.98px) {
     .choose-game-mode, .choose-algorithm, .choose-heuristic {
         width: 100%;

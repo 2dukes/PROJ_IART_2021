@@ -53,6 +53,7 @@ class Game {
         this.startButton.addEventListener("click", this.run.bind(this));
 
         this.startSpin = document.getElementById("run_spinner");
+        this.startText = document.getElementById("start_button_text");
 
         this.backMenuButton = document.getElementById("backMenu");
         this.backMenuButton.addEventListener("click", this.switchToMenu.bind(this));
@@ -66,7 +67,8 @@ class Game {
         if(this.mode == COMPUTER) {
             this.running = true;
             this.startSpin.classList.remove("d-none");
-            await new Promise(r => setTimeout(r, 1));
+            this.startText.innerHTML = "Calculating";
+            await new Promise(r => setTimeout(r, 50));
             try {
                 console.log(this.board.board);
                 this.solution = this.runSearch(this.algorithm, this.board);
@@ -76,6 +78,7 @@ class Game {
                 this.board.drawBoard();
             }
             this.startSpin.classList.add("d-none");
+            this.startText.innerHTML = "Start";
             this.running = false;
 
         } else if(this.mode == HUMAN) {
