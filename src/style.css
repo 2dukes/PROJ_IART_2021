@@ -43,7 +43,7 @@ table.table tbody td.selected {
 
     }
 
-    .choose-algorithm {
+    .choose-algorithm, .choose-heuristic {
         padding: 0 !important;
     }
 
