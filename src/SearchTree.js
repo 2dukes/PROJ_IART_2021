@@ -74,7 +74,6 @@ class SearchTree {
         while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
 
             let newNode = queue.dequeue().element;
-            console.log(newNode.heuristic, newNode.currentDepth);
 
             if(newNode.reachedFinalState) {
                 console.log("Found a solution:");
@@ -107,7 +106,6 @@ class SearchTree {
 
         while(result == -1 && (performance.now() - t0) < timeout) {
             result = this.dfs(root, depth);
-            console.log("Depth: " + depth);
             depth++;
         }
 
