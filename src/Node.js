@@ -378,7 +378,7 @@ function checkEqualNodes(node1, node2) {
 }
 
 
-function deal(board0) { // duplicada
+function deal(board0) { 
 
     let board = [];
 
