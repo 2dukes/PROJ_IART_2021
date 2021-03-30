@@ -3,8 +3,6 @@ const MAX_DEALS = 1;
 
 let totalDeals = 0;
 
-
-
 class Node {
     constructor(move, parent, currentDepth, board, usedDeals, usedHeuristic) {
         this.move = move;

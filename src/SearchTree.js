@@ -134,6 +134,7 @@ class SearchTree {
                 continue;
             }
             if(newNode.reachedFinalState) { 
+                console.log("Queue Size: " + queue.length);
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
                 return newNode;
@@ -147,42 +148,6 @@ class SearchTree {
             }
         }
 
-        return -1;
-    }
-
-    dfsWithPriority(root, limit) {
-        let visitedBoards = [];
-
-        let queue = new PriorityQueue();
-        queue.enqueue(root, root.heuristic);
-        
-        let t0 = performance.now();
-        let timeout = 20000;
-        
-        while(queue.length != 0 && (performance.now() - t0) < timeout) {
-
-            let newNode = queue.dequeueRear().element;
-
-            if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
-                console.log("Already visited");
-                continue;
-            }
-            if(newNode.reachedFinalState) {
-                console.log("Found a solution:");
-                console.log(this.buildSolution(newNode));
-                return newNode;
-            }
-            
-            if(newNode.currentDepth < limit || limit == null) {
-                visitedBoards.push(newNode.board.toString());
-                
-                let children = newNode.expand();
-
-                for (let i = 0; i < children.length; ++i)
-                    queue.enqueue(children[i], children[i].heuristic);
-            }
-        }
-        console.log('No :(');
         return -1;
     }
 
