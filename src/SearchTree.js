@@ -5,12 +5,15 @@ class SearchTree {
     run(method, board, heuristic) {
         switch(method) {
             case "dfs":
-                this.result = this.dfsWithPriority(new Node(null, null, 0, board, 0, heuristic), null);
+                totalDeals = 0;
+                this.result = this.dfs(new Node(null, null, 0, board, 0, heuristic), null);
                 break;
             case "bfs":
+                totalDeals = 0;
                 this.result = this.bfs(new Node(null, null, 0, board, 0, heuristic));
                 break;
             case "iterative":
+                totalDeals = 0;
                 this.result = this.iterativeDeepening(new Node(null, null, 0, board, 0, heuristic));
                 break;
             case "greedy":
@@ -130,16 +133,16 @@ class SearchTree {
                 console.log("Already visited");
                 continue;
             }
-            if(newNode.reachedFinalState) {
+            if(newNode.reachedFinalState) { 
                 console.log("Found a solution:");
                 console.log(this.buildSolution(newNode));
                 return newNode;
             }
-            
+
             if(newNode.currentDepth < limit || limit == null) {
                 visitedBoards.push(newNode.board.toString());
                 
-                let children = newNode.expand();
+                let children = newNode.expandUniformed();
                 queue.unshift(...children);
             }
         }
@@ -179,7 +182,7 @@ class SearchTree {
                     queue.enqueue(children[i], children[i].heuristic);
             }
         }
-
+        console.log('No :(');
         return -1;
     }
 
@@ -224,7 +227,7 @@ class SearchTree {
 
             visitedBoards.push(newNode.board);
             
-            let children = newNode.expand();
+            let children = newNode.expandUniformed();
             queue.push(...children);
         }
 

@@ -1,6 +1,9 @@
 const MAX_DEPTH = 1000;
+const MAX_DEALS = 1;
 
 let totalDeals = 0;
+
+
 
 class Node {
     constructor(move, parent, currentDepth, board, usedDeals, usedHeuristic) {
@@ -27,7 +30,7 @@ class Node {
                 this.heuristic = this.evaluateMove4();
                 break;
             default:
-                console.log("Invalid heuristic!");
+                this.heuristic = 0;
         }
 
         this.usedHeuristic = usedHeuristic;
@@ -58,6 +61,39 @@ class Node {
         let boardDealNode = deal(this.board);
         children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1, this.usedHeuristic));
 
+        return children;
+    }
+
+    expandUniformed() {
+
+
+        if (this.currentDepth > MAX_DEPTH) {
+            console.log("Max Depth exceeded!");
+            return []; 
+        }
+
+        let children = [];
+        let validMoves = getValidMoves(this.board);
+
+        
+        if (totalDeals++ < MAX_DEALS) {
+            console.log("Using deal...");
+            let boardDealNode = deal(this.board);
+            children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1, ""));
+        }
+
+        for(let i = 0; i < validMoves.length; ++i) {
+            let newBoard = [];
+
+            // Clone board
+            for (let j = 0; j < this.board.length; ++j)
+                newBoard[j] = this.board[j].slice();
+            
+            let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]), this.usedDeals, "");
+            children.push(newNode);
+        }
+       
+        
         return children;
     }
 
