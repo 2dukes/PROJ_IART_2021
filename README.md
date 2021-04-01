@@ -12,10 +12,10 @@ To run the project you can choose either of the two options:
 
 - Place the project inside a Web Server like Apache and then visit: <br>
 ```
-localhost/PROJ_IART_2021
+localhost/src
 ```
 
-- Or visit the [following link](https://2dukes.github.io/PROJ_IART_2021/src/).
+- Or visit the [following link](https://2dukes.github.io/PROJ_IART_2021/).
 
 Note that if you want to run it locally it's crucial that you use a **Web Server**!
 
