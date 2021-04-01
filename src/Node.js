@@ -122,18 +122,20 @@ class Node {
         let numberOfMoves = 0;
         let validMove = getFirstValidMove(auxBoard);
 
+        // Apply valid moves iteratively
         while(validMove != null) {
             numberOfMoves++;
             applyMove(auxBoard, validMove); // Already modifies original auxBoard
             validMove = getFirstValidMove(auxBoard);
         }
 
+        // When a solution is found
         if(this.boardEmpty(auxBoard)) 
             numberOfMoves = 0;
 
         return {
             "finalBoard": auxBoard,
-            "numberOfMoves": numberOfMoves + this.countNotEmpty(auxBoard) / 2
+            "numberOfMoves": numberOfMoves + this.countNotEmpty(auxBoard) / 2 // Estimate the number of moves left otherwise + the moves already taken so far
         };
     }
 
@@ -141,11 +143,13 @@ class Node {
     hintsEvaluate2(auxBoard) {
         let validMove = getFirstValidMove(auxBoard);
 
+        // Apply valid moves iteratively
         while(validMove != null) {
             applyMove(auxBoard, validMove); // Already modifies original auxBoard
             validMove = getFirstValidMove(auxBoard);
         }
 
+        // When a solution is found
         if(this.boardEmpty(auxBoard)) {
             return {
                 "finalBoard": auxBoard,
@@ -155,7 +159,7 @@ class Node {
 
         return {
             "finalBoard": auxBoard,
-            "numberOfMoves": this.countNotEmpty(auxBoard) / 2
+            "numberOfMoves": this.countNotEmpty(auxBoard) / 2 // Estimate the number of moves left otherwise
         };
     }
 
@@ -209,8 +213,10 @@ class Node {
         let board = cloneBoard(this.board);
         let numberOfMoves = getValidMoves(board).length;
 
-        let currentCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;  
+        // number of full cellls
+        let currentCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2; 
 
+        // Expected number of moves in the future + number of current valid moves
         return currentCells/2 + numberOfMoves;
     }
 
