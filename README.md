@@ -8,14 +8,14 @@ Project developed by:
 | Rui Pinto     | 201806441     |
 | Tiago Gomes   | 201806658     |
 
-To view the project you can either choose two options:
+To run the project you can choose either of the two options:
 
-Place the project inside a Web Server like Apache and then visit: <br>
+- Place the project inside a Web Server like Apache and then visit: <br>
 ```
 localhost/PROJ_IART_2021
 ```
 
-Or visit the [following link](https://2dukes.github.io/PROJ_IART_2021/src/).
+- Or visit the [following link](https://2dukes.github.io/PROJ_IART_2021/src/).
 
 Note that if you want to run it locally it's crucial that you use a **Web Server**!
 
