@@ -1,18 +1,24 @@
+// Game states
 let MENU = 0;
-let FIRST_CELL = 1;
-let SECOND_CELL = 2;
-let VIEW_SOL = 3;
-let PLAY_SOL = 4;
+let FIRST_CELL = 1; // User must select first cell
+let SECOND_CELL = 2; // User must select the second cell
+let VIEW_SOL = 3; // Solution is being displayed
+let PLAY_SOL = 4; 
 let END = 5;
 
-let HUMAN = 0;
+// Game modes
+let HUMAN = 0; 
 let COMPUTER = 1;
 
+/*
+    Game class which is the main core of the entire game. 
+    It holds information about the game state, algorithm/board/heuristic picked, interface buttons, etc.
+*/
 class Game {
     constructor() {
         console.log("Starting game...");
         
-        this.state = MENU; // 0 - choose first cell, 1 - choose second cell
+        this.state = MENU; 
 
         this.firstX = -1;
         this.firstY = -1;
@@ -26,7 +32,7 @@ class Game {
         
         this.board = new Board(this, this.boards[this.boardsSel.value].board);
 
-        if (this.boardsSel.value == "random") // random
+        if (this.boardsSel.value == "random") // Random boards
             this.board.buildRandomBoard();
         else 
             this.board.setBoard(this.boards[this.boardsSel.value].board);
@@ -60,6 +66,9 @@ class Game {
 
     }
 
+    // Responsible for running the game logic
+    // Starts the respective search algorithm in case of computer game mode
+    // or normal interactive game when in human mode
     async run() {
         if(this.running)
             return;
@@ -71,6 +80,8 @@ class Game {
             await new Promise(r => setTimeout(r, 50));
             try {
                 console.log(this.board.board);
+                // Search runs according to selected algorithm 
+                // and calls setSolution to display the solution
                 this.solution = this.runSearch(this.algorithm, this.board);
                 this.setSolution();
             } catch (err) {
@@ -93,6 +104,7 @@ class Game {
        
     }
 
+    // Resets some attributes so that we are able to restart the game
     reset() {
         this.boards = this.getBoards();
 
@@ -108,6 +120,8 @@ class Game {
         this.firstY = -1;
     }
 
+    // Starts the search, given the method name
+    // Returns the array of moves computed to finish the game (solution)
     runSearch(method) {
         let t0 = performance.now();
         let solution = this.searchTree.run(method, this.board.board, this.heuristic);
@@ -116,6 +130,7 @@ class Game {
         return solution;
     }
 
+    // Gets predefined boards
     getBoards() {
         let request = new XMLHttpRequest();
         request.open("GET", "../resources/boards.json", false);
@@ -125,8 +140,10 @@ class Game {
         return boards;
     }
 
+    // Makes the necessary actions when a cell is clicked, depending of the game state
     handleCellClick(event) {
         if(event.target.innerHTML != 0) {
+            // User selects the first cell
             if(this.state == FIRST_CELL) {
                 this.state = 1;
 
@@ -138,7 +155,10 @@ class Game {
 
                 this.state = SECOND_CELL;
 
-            } else if(this.state == SECOND_CELL) {
+            } 
+            // User selects the second and last cell for a move 
+            // and it is applied to the board
+            else if(this.state == SECOND_CELL) {
                 let x, y;
                 let xAndY = event.target.id.split('c');
                 y = parseInt(xAndY[0]); 
@@ -165,10 +185,12 @@ class Game {
         }
 	}
 
+    // Change hints flag to true
     showHints() {
         this.hints = true;
     }
-
+    
+    // Display the movie solution (demonstration only)
     async drawSolutionAnimation(solution) {
 
         this.state = VIEW_SOL;
@@ -185,6 +207,7 @@ class Game {
         this.state = END;
     }
 
+    // Set up for showing the solution
     setSolution() {
         this.board.setDrawSolution(true);
         this.state = VIEW_SOL;
@@ -192,6 +215,7 @@ class Game {
         this.updateBoardSolution();
     }
 
+    // Goes to the previous board state when showing the solution
     solutionBack() {
         if(this.currentMoveView > 0 && this.state == VIEW_SOL) {
             this.currentMoveView--;
@@ -199,19 +223,22 @@ class Game {
         }
     }
 
+    // Goes to the next board state when showing the solution
     solutionForward() {
         if(this.currentMoveView < this.solution.length - 1 && this.state == VIEW_SOL) {
             this.currentMoveView++;
             this.updateBoardSolution();
         }
     }
-
+    
+    // Display a new move according to the board's solution
     updateBoardSolution() {
         this.board.board = this.solution[this.currentMoveView].board;
         this.board.clearBoard();
         this.board.drawBoard();
     }
 
+    // Game board event listener
     changeBoard() {
         if(!this.running) {
             if (this.boardsSel.value == "random") // random
@@ -222,6 +249,7 @@ class Game {
         }
     }
 
+    // Algorithm event listener
     changeAlgorithm() {
         if(!this.running) {
             this.changeHeuristic();
@@ -229,13 +257,15 @@ class Game {
         }
     }
 
+    // Game mode event listener
     changeMode() {
         if(this.state == MENU) {
             this.changeHeuristic();
             this.mode = this.modesSel.value;
         }
     }
-
+    
+    // Responsible for displaying the right dropdown in case a computer mode or a greedy/A-Star algorithm is selected
     changeHeuristic() {
         if (!this.running) {
             let gameMode = document.querySelector("div.choose-game-mode");
@@ -268,6 +298,7 @@ class Game {
         }
     }
 
+    // Switch from menu interface to game.
     switchToGame() {
         let menuDiv = document.getElementById("menu");
         menuDiv.style.display = "none";
@@ -279,6 +310,7 @@ class Game {
         menuButtonDiv.style.display = "block";
     }
 
+    // Switch from game interface to menu.
     switchToMenu() {
         let menuDiv = document.getElementById("menu");
         menuDiv.style.display = "block";

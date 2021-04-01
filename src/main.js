@@ -49,7 +49,8 @@ function getUrlVars() {
 	);
 	return vars;
 }
-//Include additional files here
+
+// File Includes
 serialInclude([
 	"Move.js",
     "Position.js",
@@ -60,6 +61,7 @@ serialInclude([
 	"PriorityQueue.js",
 
 	(main = function () {
+		// Main Thread
 		let game = new Game();
 	}),
 ]);

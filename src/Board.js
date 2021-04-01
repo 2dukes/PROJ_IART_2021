@@ -5,11 +5,12 @@ class Board {
 		this.game = game;
 		this.board = board;
 
-		this.isSolution = false;	
+		this.isSolution = false; // true if we are showing a solution
 
 		this.initBoard();
 	}
-
+	
+	// Add event listeners to some crucial game buttons
 	initBoard() {
 		let dealButton = document.querySelector("body button#deal");
 		let hintButton = document.querySelector("body button#hints");
@@ -17,18 +18,17 @@ class Board {
 		let forwardButton = document.querySelector("body button#forward");
 		
 		dealButton.addEventListener("click", this.deal.bind(this));
-
 		hintButton.addEventListener("click", this.giveHints.bind(this));
-
 		backButton.addEventListener("click", this.game.solutionBack.bind(this.game));
-
 		forwardButton.addEventListener("click", this.game.solutionForward.bind(this.game));
 	}
 
+	// Setter for board.
 	setBoard(board) {
 		this.board = board;
 	}
 
+	// Builds a random board with 3 lines
 	buildRandomBoard() {
 		this.board = [];
 		for (let i = 0; i < 3; ++i) {
@@ -40,10 +40,12 @@ class Board {
 		}
 	}
 
+	// Clears the board section of the HTML document
 	clearBoard() {
 		document.querySelector("table#board tbody").innerHTML = "";
 	}
 
+	// Creates and inserts the current board on the HTML document
 	drawBoard() {
 		this.clearBoard();
 		if(this.board == null)
@@ -89,7 +91,8 @@ class Board {
 			this.boardTable.appendChild(tableRow);
 		}
 	}
-
+	
+	// Makes a move independent of the order of the start and end positions
 	handleCellOrder(firstX, firstY, secondX, secondY) {
 		let validPairs;
 		if (secondY > firstY) {
@@ -109,6 +112,7 @@ class Board {
 		}
 	}
 
+	// Check if the chosen position is valid
 	checkValidPair(validPairs, x, y) {
 		for (let i = 0; i < validPairs.length; ++i) {
 			if (validPairs[i].p2.x == x && validPairs[i].p2.y == y) {
@@ -118,6 +122,7 @@ class Board {
 		return false;
 	}
 
+	// Clean a board cell
 	emptyCell(x, y) {
 		this.board[y][x] = 0;
 		let cell = document.getElementById(y + "c" + x);
@@ -127,6 +132,7 @@ class Board {
 		cell.classList.remove("selectable");
 	}
 
+	// Duplicate the current board property
 	deal() {
         let currentHeight = this.board.length;
         let toAdd = [], row = [];
@@ -157,6 +163,7 @@ class Board {
         this.insertDeal(toAdd, currentHeight);
     }
 
+	// Applies the board duplication to HTML
     insertDeal(toAdd, previousHeight) {
 
         let colors = [
@@ -202,6 +209,7 @@ class Board {
 			this.giveHints();
     }
 
+	// Highlights the valid moves
     giveHints() {
         let validMoves = getValidMoves(this.board);
         this.game.showHints();
@@ -211,6 +219,7 @@ class Board {
         }
     }
 
+	// Applies hint color to a specific (valid) move
     changeHintColor(move) {
 		let x1, x2, y1, y2;
 		x1 = move.p1.x; y1 = move.p1.y;
@@ -219,6 +228,7 @@ class Board {
         document.getElementById(y2 + "c" + x2).classList.add("hint");
     }
 	
+	// Removes the highlights of the valid moves
 	removeHints() {
 		let cells = document.querySelectorAll("#board td");
 		for(let i = 0; i < cells.length; ++i) {
@@ -226,6 +236,7 @@ class Board {
 		}
 	}
 
+	// Removes the highlight of the selected cell
 	removeSelected() {
 		let cells = document.querySelectorAll("#board td");
 		for(let i = 0; i < cells.length; ++i) {
@@ -233,6 +244,7 @@ class Board {
 		}
 	}
 
+	// Set up for drawing the solution
 	setDrawSolution(isSolution) {
 		let dealButton = document.querySelector("body button#deal");
 		let hintButton = document.querySelector("body button#hints");

@@ -19,13 +19,6 @@ class PriorityQueue {
     { 
         this.items = []; 
     } 
-  
-    // functions to be implemented 
-    // enqueue(item, priority) 
-    // dequeue() 
-    // front() 
-    // isEmpty() 
-    // printPQueue() 
 
     // enqueue function to add element 
     // to the queue as per priority 
@@ -45,7 +38,10 @@ class PriorityQueue {
                 this.items.splice(i, 0, qElement); 
                 contain = true; 
                 break; 
-            } else if(this.items[i].priority == qElement.priority) { //BETWEEN THE ELEMENTS WITH SAME PRIORITY, THOSE WITH GREATEST DEPTH COME FIRST
+            }
+            // Between the nodes with the same priority, those with greatest depth come first 
+            // (added by the group for increased performance based on experiments)
+            else if(this.items[i].priority == qElement.priority) {
                 if(qElement.element.currentDepth > this.items[i].element.currentDepth) {
                     this.items.splice(i, 0, qElement); 
                     contain = true; 

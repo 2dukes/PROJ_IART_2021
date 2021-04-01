@@ -1,8 +1,17 @@
 const MAX_DEPTH = 1000;
 const MAX_DEALS = 1;
 
-let totalDeals = 0;
+let totalDeals = 0; // total number of used deals during the search
 
+/*
+    Represents a node in the search tree.
+    move - corresponding move
+    parent - a reference to the parent node
+    currentDepth - depth in the tree
+    board - the board associated with the node (game state)
+     - number of deals move used until that node
+    usedHeuristic - the heuristic function to use
+*/
 class Node {
     constructor(move, parent, currentDepth, board, usedDeals, usedHeuristic) {
         this.move = move;
@@ -10,6 +19,7 @@ class Node {
         this.currentDepth = currentDepth;
         this.board = [...board];
 
+        // if node represents a final game state, set reachedFinalState to true
         this.reachedFinalState = checkFinalState(this.board);
 
         this.usedDeals = usedDeals;
@@ -35,6 +45,7 @@ class Node {
             
     }
 
+    // Expands the node, returning all its children
     expand() {
         if (this.currentDepth > MAX_DEPTH) {
             console.log("Max Depth exceeded!");
@@ -45,24 +56,28 @@ class Node {
 
         let validMoves = getValidMoves(this.board);
 
+        // for each valid move in the board, it is applied 
+        // and a new node is created and added to the node's children
         for(let i = 0; i < validMoves.length; ++i) {
-            let newBoard = [];
-
-            // Clone board
-            for (let j = 0; j < this.board.length; ++j)
-                newBoard[j] = this.board[j].slice();
+           
+            let newBoard = cloneBoard(this.board);
             
             let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]),this.usedDeals, this.usedHeuristic);
             children.push(newNode);
         }
 
+        // deal move is always added to the children regardless of the valid moves
         let boardDealNode = deal(this.board);
         children.push(new Node(null, this, this.currentDepth + 1, boardDealNode, this.usedDeals + 1, this.usedHeuristic));
 
         return children;
     }
 
-    expandUniformed() {
+    
+    // Expands the node and returns the children.
+    // Used for the uninformed search algorithms as the deal move is the first child
+    // and only expands the node if max deal moves is not reached
+    expandUninformed() {
 
 
         if (this.currentDepth > MAX_DEPTH) {
@@ -73,7 +88,7 @@ class Node {
         let children = [];
         let validMoves = getValidMoves(this.board);
 
-        
+        // adds deal move to the children only if limit has not been reached
         if (totalDeals++ < MAX_DEALS) {
             console.log("Using deal...");
             let boardDealNode = deal(this.board);
@@ -81,11 +96,8 @@ class Node {
         }
 
         for(let i = 0; i < validMoves.length; ++i) {
-            let newBoard = [];
-
-            // Clone board
-            for (let j = 0; j < this.board.length; ++j)
-                newBoard[j] = this.board[j].slice();
+            
+            let newBoard = cloneBoard(this.board);
             
             let newNode = new Node(validMoves[i], this, this.currentDepth + 1, applyMove(newBoard, validMoves[i]), this.usedDeals, "");
             children.push(newNode);
@@ -95,6 +107,7 @@ class Node {
         return children;
     }
 
+    // Counts the number of full cells in the booard
     countNotEmpty(board) {
         let count = 0;
         for (let y = 0; y < board.length; ++y)
@@ -104,6 +117,7 @@ class Node {
         return count;
     }
 
+    // Used in heuristic 1 as part of the node's search/estimation of moves left to solve the board
     hintsEvaluate(auxBoard) {
         let numberOfMoves = 0;
         let validMove = getFirstValidMove(auxBoard);
@@ -123,6 +137,7 @@ class Node {
         };
     }
 
+    // Used in heuristic 3 as part of the node's search/estimation of moves left to solve the board
     hintsEvaluate2(auxBoard) {
         let validMove = getFirstValidMove(auxBoard);
 
@@ -144,6 +159,7 @@ class Node {
         };
     }
 
+    // Checks if the board is empty (reached final state)
     boardEmpty(board) {
         for (let y = 0; y < board.length; ++y)
             for (let x = 0; x < board[y].length; ++x)
@@ -151,22 +167,25 @@ class Node {
 
         return true;
     }
-
-    cloneBoard() {
-        let auxBoard = [];
-        for (let i = 0; i < this.board.length; ++i)
-            auxBoard[i] = this.board[i].slice();
-        
-        return auxBoard;
+    
+    // Counts the number of empty cells in the booard
+    countEmpty(board) {
+        let count = 0;
+        for (let y = 0; y < board.length; ++y)
+            for (let x = 0; x < board[y].length; ++x)
+                if (board[y][x] == 0) count++;
+            
+        return count;
     }
 
+    // Heuristic function 1
     evaluateMove() {
         // Hints
-        let st1CB = this.cloneBoard();
+        let st1CB = cloneBoard(this.board);
         let nH_1 = this.hintsEvaluate(st1CB).numberOfMoves;
 
         // Hints + Deal + Hints
-        let st2CB = this.cloneBoard();
+        let st2CB = cloneBoard(this.board);
         let hints_st2_1 = this.hintsEvaluate(st2CB);
         let hints_st2_2 = this.hintsEvaluate(deal(hints_st2_1.finalBoard));
         let nH_2;
@@ -176,7 +195,7 @@ class Node {
             nH_2 = hints_st2_1.numberOfMoves + 1 + hints_st2_2.numberOfMoves;
 
         // Deal + Hints
-        let st3CB = this.cloneBoard();
+        let st3CB = cloneBoard(this.board);
         let nH_3 = this.hintsEvaluate(deal(st3CB)).numberOfMoves;
 
         let minHeuristic = Math.min(nH_1, nH_2, nH_3);
@@ -185,8 +204,9 @@ class Node {
         return minHeuristic;
     }
 
+    // Heuristic function 2
     evaluateMove2() {
-        let board = this.cloneBoard();
+        let board = cloneBoard(this.board);
         let numberOfMoves = getValidMoves(board).length;
 
         let currentCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2;  
@@ -194,13 +214,14 @@ class Node {
         return currentCells/2 + numberOfMoves;
     }
 
+    // Heuristic function 3
     evaluateMove3() {
         // Hints
-        let st1CB = this.cloneBoard();
+        let st1CB = cloneBoard(this.board);
         let nH_1 = this.hintsEvaluate2(st1CB).numberOfMoves;
 
         // Hints + Deal + Hints
-        let st2CB = this.cloneBoard();
+        let st2CB = cloneBoard(this.board);
         let hints_st2_1 = this.hintsEvaluate2(st2CB);
         let hints_st2_2 = this.hintsEvaluate2(deal(hints_st2_1.finalBoard));
         let nH_2;
@@ -210,7 +231,7 @@ class Node {
             nH_2 = hints_st2_2.numberOfMoves;
 
         // Deal + Hints
-        let st3CB = this.cloneBoard();
+        let st3CB = cloneBoard(this.board);
         let nH_3 = this.hintsEvaluate2(deal(st3CB)).numberOfMoves;
 
         let minHeuristic = Math.min(nH_1, nH_2, nH_3);
@@ -219,29 +240,33 @@ class Node {
         return minHeuristic;
     }
 
-
+    // Heuristic function 4
     evaluateMove4() {
-        let board = this.cloneBoard();
+        let board = cloneBoard(this.board);
         let cellValues = getRemainingCells(board);
-        let ocur = countOccurrences(cellValues);
-        this.ocur = ocur;
+        let ocur = countOccurrences(cellValues); // number of occurences of all numbers in the board
         let result = 0;
-        let combs = [[1,9], [2,8], [3,7], [4,6]];
-        let willDeal = false;
+        let combs = [[1,9], [2,8], [3,7], [4,6]]; // possible matching combinations (excluding 5)
+        let willDeal = false; // if true, a deal move is necessary (there are unmatched cells)
 
         for(let i = 0; i < combs.length; ++i) { 
             if(Math.min(ocur[combs[i][0]], ocur[combs[i][1]]) == ocur[combs[i][0]]) {
                 
                 let dif = ocur[combs[i][1]] - ocur[combs[i][0]];
-                if(dif > 0) {
-                    result += Math.floor(dif/2);
+                if(dif > 0) { // there are dif numbers that can only be matched with its equals
+                    result += Math.floor(dif/2); // number of matches possible with the cells in dif
+
+                    //if dif is not even, a cell is unmatched and another move and a deal is necessary
                     if(dif % 2 != 0) {
                         result += 1;
                         willDeal = true;
                     }
                 }
+                // if combs[i][0] is the minimum, then it is the number of
+                // combs[i][0] - combs[i][1] matches possible in the board 
+                // and it is added to the result
                 result += ocur[combs[i][0]];
-            } else {
+            } else { //same as above but the minimum is the second element
                 let dif = ocur[combs[i][0]] - ocur[combs[i][1]];
                 if(dif > 0) {
                     result += Math.floor(dif/2);
@@ -254,36 +279,31 @@ class Node {
             }
             
         }
+        // checks if there are unmatched '5' cells and adds to the result, and deal becomes necessary
         if(ocur[5] % 2 != 0) {
             result += Math.floor(ocur[5]/2) + 1;
             willDeal = true;
         }
+
+        // if a deal move is necessary, add 1 to the result, as deal counts as a move
         result += willDeal ? 1 : 0;
         
         return result;
-    }
-    
-    countEmpty(board) {
-        let count = 0;
-        for (let y = 0; y < board.length; ++y)
-            for (let x = 0; x < board[y].length; ++x)
-                if (board[y][x] == 0) count++;
-            
-        return count;
-    }
-    
-    checkExistsVerticalMatchesOrSumTenPairs(moves) {
-        for (let i = 0; i < moves.length; ++i)
-            if (moves[i] != null) {
-                if((moves[i].startNumber + moves[i].endNumber == 10) || moves[i].p1.x == moves[i].p2.x) 
-                    return true;    
-            }
-        return false;
     }
 
 }
 
 
+// creates a copy of the board (matrix)
+function cloneBoard(board) {
+    let auxBoard = [];
+    for (let i = 0; i < board.length; ++i)
+        auxBoard[i] = board[i].slice();
+    
+    return auxBoard;
+}
+
+// Returns true if the given board represents a final state of the game
 function checkFinalState(board) {
     for (let y = 0; y < board.length; ++y) {
         for (let x = 0; x < board[0].length; ++x) {
@@ -294,6 +314,7 @@ function checkFinalState(board) {
     return true;
 }
 
+// Returns all the valid moves in a given board state
 function getValidMoves(board) {
     let moves = [];
     for (let y = 0; y < board.length; ++y) {
@@ -305,6 +326,7 @@ function getValidMoves(board) {
     return moves;
 }
 
+// Gets the first valid move of the board
 function getFirstValidMove(board) {
     let moves = [];
     for (let y = 0; y < board.length; ++y) {
@@ -319,6 +341,7 @@ function getFirstValidMove(board) {
     return null;
 }
 
+// Gets all the valid moves for a given cell
 function getValidMovesCell(board, x, y) {
     let moves = [];
     let initX = x;
@@ -372,6 +395,8 @@ function getValidMovesCell(board, x, y) {
     return moves;
 }
 
+// Applies a given move to a board and returns the new board state. 
+// If the move is not valid, the board is not changed
 function applyMove(board, move) {
     let x1 = move.p1.x;
     let y1 = move.p1.y;
@@ -386,40 +411,10 @@ function applyMove(board, move) {
     return board;
 }
 
-function applyMoves(board, moves) {
-    for(let i = 0; i < moves.length; ++i) {
-        board = applyMove(board, moves[i]);
-    }
-
-    return board;
-}
-
-function checkEqualBoards(board1, board2) {
-    if (board1 === board2) return true;
-    if (board1 == null || board2 == null) return false;
-    if (board1.length != board2.length) return false;
-    
-    for (let i = 0; i < board1.length; ++i) 
-        for (let j = 0; j < board1[0].length; ++j) 
-           if (board1[i][j] !== board2[i][j]) return false;
-        
-    return true;
-}
-
-function checkEqualNodes(node1, node2) {
-
-    return checkEqualBoards(node1.board, node2.board);
-}
-
-
+// Duplicates the current board
 function deal(board0) { 
 
-    let board = [];
-
-    // Clone board
-    for (let j = 0; j < board0.length; ++j)
-        board[j] = board0[j].slice();
-
+    let board = cloneBoard(board0);
 
     let currentHeight = board.length;
     let toAdd = [], row = [];
@@ -447,6 +442,8 @@ function deal(board0) {
     return board;
 }
 
+// Given a board state, returns an array containing all the values of its non-empty cells
+// in order with possible repetition
 function getRemainingCells(board) {
 
     let remaining = [];
@@ -462,6 +459,8 @@ function getRemainingCells(board) {
     return remaining;
 }
 
+// Given an array with numbers, returns a dictionary with the number of occurrences of the
+// integers from 1 to 9 in that array. For example, countOccurrences([1,2,1,3,1])[1] == 3
 function countOccurrences(values) {
     let ocur = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0};
 

@@ -1,7 +1,9 @@
-class SearchTree {
-    constructor() {
-    }
+const TIMEOUT = 20000;
 
+class SearchTree {
+    constructor() {}
+
+    // Starts the search, given the method, board and heuristic
     run(method, board, heuristic) {
         switch(method) {
             case "dfs":
@@ -29,6 +31,7 @@ class SearchTree {
             return this.buildSolution(this.result);
     }
 
+    // Builds the path to the solution (a list of nodes, each one with a move)
     buildSolution(node) {
         let solution = [node];
         while(node.parent != null) {
@@ -38,15 +41,15 @@ class SearchTree {
         return solution;
     }
 
+    // Greedy search algorithm
     greedy(root) {
         
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic);
 
         let t0 = performance.now();
-        let timeout = 20000;
 
-        while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
+        while(queue.items.length > 0 && (performance.now() - t0) < TIMEOUT) {
 
             let newNode = queue.dequeue().element;
             
@@ -67,15 +70,15 @@ class SearchTree {
         return -1;
     }
 
+    // A-Star search algorithm
     a_star(root) {
         let queue = new PriorityQueue();
         queue.enqueue(root, root.heuristic); // distance on root is 0
         let count = 0;
 
         let t0 = performance.now();
-        let timeout = 20000;
 
-        while(queue.items.length > 0 && (performance.now() - t0) < timeout) {
+        while(queue.items.length > 0 && (performance.now() - t0) < TIMEOUT) {
 
             let newNode = queue.dequeue().element;
 
@@ -94,40 +97,30 @@ class SearchTree {
         return -1;
     }
 
-    chooseBestChild(nodes) {
-        let bestChild;
-        bestChild.heuristic = Number.MAX_VALUE;
-        for (let i = 0; i < nodes.length; ++i) 
-            if (nodes[i].heuristic < bestChild)
-                bestChild = nodes[i];
-
-        return bestChild;
-    }
-
+    // Iterative deepening search algorithm
     iterativeDeepening(root) {
         let depth = 0, result = -1;
 
         let t0 = performance.now();
-        let timeout = 20000;
 
-        while(result == -1 && (performance.now() - t0) < timeout) {
+        while(result == -1 && (performance.now() - t0) < TIMEOUT) {
             result = this.dfs(root, depth);
             depth++;
         }
-        if((performance.now() - t0) >= timeout)
+        if((performance.now() - t0) >= TIMEOUT)
             throw "Solution not Found!";
 
         return result;
     }
 
+    // Depth First Search algorithm
     dfs(root, limit) {
         let visitedBoards = [];
         let queue = [root];
 
         let t0 = performance.now();
-        let timeout = 20000;
         
-        while(queue.length != 0 && (performance.now() - t0) < timeout) {
+        while(queue.length != 0 && (performance.now() - t0) < TIMEOUT) {
             let newNode = queue.shift();
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
                 console.log("Already visited");
@@ -143,7 +136,7 @@ class SearchTree {
             if(newNode.currentDepth < limit || limit == null) {
                 visitedBoards.push(newNode.board.toString());
                 
-                let children = newNode.expandUniformed();
+                let children = newNode.expandUninformed();
                 queue.unshift(...children);
             }
         }
@@ -151,33 +144,14 @@ class SearchTree {
         return -1;
     }
 
-    countNumMoves(path) {
-        let result = 0;
-        for (let i = 0; i < path.length; ++i) {
-            if (path[i][0] != null)
-                result++;
-        }
-        return result;
-    }
-
-    countNumDeals(path) {
-        let result = 0;
-        for (let i = 0; i < path.length; ++i) {
-            if (path[i][0] == null)
-                result++;
-        }
-        return result - 1; // -1 because of the root node
-    }
-
-
+    // Breadth First Search algorithm
     bfs(root) {
         let visitedBoards = [];
         let queue = [root];
 
         let t0 = performance.now();
-        let timeout = 20000;
         
-        while(queue.length != 0 && (performance.now() - t0) < timeout) {
+        while(queue.length != 0 && (performance.now() - t0) < TIMEOUT) {
             let newNode = queue.shift();
 
             if(this.checkAlreadyVisited(visitedBoards, newNode.board.toString())) {
@@ -192,13 +166,14 @@ class SearchTree {
 
             visitedBoards.push(newNode.board);
             
-            let children = newNode.expandUniformed();
+            let children = newNode.expandUninformed();
             queue.push(...children);
         }
 
         return -1;
     }
 
+    // Checks if a board was already visited in the search
     checkAlreadyVisited(visitedBoards, board) {
         for (let i = 0; i < visitedBoards; ++i) {
             if(visitedBoards[i] === board)
