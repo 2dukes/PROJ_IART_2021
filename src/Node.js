@@ -213,7 +213,7 @@ class Node {
         let board = cloneBoard(this.board);
         let numberOfMoves = getValidMoves(board).length;
 
-        // number of full cellls
+        // number of full cells
         let currentCells = board.length * 9 - this.countEmpty(board) - numberOfMoves*2; 
 
         // Expected number of moves in the future + number of current valid moves
