@@ -8,7 +8,7 @@ Project developed by:
 | Rui Pinto     | 201806441     |
 | Tiago Gomes   | 201806658     |
 
-To view the project you can either choose two options:
+To view the project you can either choose one of two options:
 
 Place the project inside a Web Server like Apache and then visit: <br>
 ```
