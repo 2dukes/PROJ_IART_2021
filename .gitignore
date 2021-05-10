@@ -1,2 +1,4 @@
 /proj2/resources/
+/proj2/*.csv
+/proj2/.ipynb_checkpoints/
 output.txt
