@@ -15,7 +15,7 @@ To run the project you can choose either of the two options:
 localhost/src
 ```
 
-- Or visit the [following link](https://2dukes.github.io/PROJ_IART_2021/).
+- Or visit the [following link](https://2dukes.github.io/PROJ_IART_2021/proj1/src).
 
 Note that if you want to run it locally it's crucial that you use a **Web Server**!
 
