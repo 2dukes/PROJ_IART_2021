@@ -1,12 +1,9 @@
+# IART 
+**Projects developed by:** [Davide Castro](https://github.com/davide-castro20), [Rui Pinto](https://github.com/2dukes) and [Tiago Gomes](https://github.com/TiagooGomess). 
+
+<hr>
+
 # IART - Ten Pair
-
-Project developed by:
-
-| Name          | Number        |
-| ------------- |:-------------:|
-| Davide Castro | 201806512     |
-| Rui Pinto     | 201806441     |
-| Tiago Gomes   | 201806658     |
 
 To run the project you can choose either of the two options:
 
@@ -26,3 +23,9 @@ Implemented Algorithms:
 | Depth First Search    | Greedy             |
 | Breadth First Search  | A*                 |
 | Iterative Deepening   | Personal Approach  |
+
+<hr>
+
+# IART - Credit Risk Analysis
+
+The project aims to predict if a credit is risky or not. To do that we were given a Kaggle [dataset](https://www.kaggle.com/rameshmehta/credit-risk-analysis) that contained previous information about credits. After the dataset was processed, we trained a model with several Machine Learning algorithms such as Neural Networks, Support Vector Machines, K-Nearest Neighbors to see which would give us the best result. Data visualization libraries such as *Matplotlib* and *Searborn* were used to better represent the data. During the project's development, we also used: Python, Jupyter Notebook, Scikit-Learn, Pandas, Numpy, and Tensorflow.
